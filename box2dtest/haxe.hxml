@@ -1,4 +1,4 @@
 -swf-version 9
--swf-header 640:360:1000:414647
+-swf-header 550:400:30:414647
 -debug
 -lib box2d
