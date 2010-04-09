@@ -64,6 +64,19 @@ class Puggle extends Sprite {
     // TODO: turn some pegs into goal pegs
     // TODO: keep track of which these are
 
+
+    // add the side walls
+    var wallShapes:Array<Array<Point>> = [[new Point(0,0), new Point(10,0),
+        new Point(10,603), new Point(0,603)]];
+    var leftWall:ArbiStaticActor = new ArbiStaticActor(this, new Point(0,0),
+        wallShapes);
+    _allActors.push(leftWall);
+
+    var rightWall:ArbiStaticActor = new ArbiStaticActor(this, new Point(636,
+          0), wallShapes);
+    _allActors.push(rightWall);
+
+    
   }
 
 
