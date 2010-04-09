@@ -5,6 +5,7 @@ import PhysiVals;
 import flash.Lib;
 import flash.display.Sprite;
 import flash.events.Event;
+import flash.events.MouseEvent;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 
@@ -28,6 +29,9 @@ class Puggle extends Sprite {
   var _actorsToRemove:Array<Actor>;
   var _pegsLitUp:Array<PegActor>;
 
+  inline private static var LAUNCH_POINT:Point = new Point(323, 10);
+  inline private static var LAUNCH_VELOCITY:Float = 190.0;
+
   public function new() {
     super();
 
@@ -36,10 +40,11 @@ class Puggle extends Sprite {
     _pegsLitUp = [];
 
     setupPhysicsWorld();
-    makeBall();
     createLevel();
     addEventListener(Event.ENTER_FRAME, newFrameListener);
 
+    Lib.current.stage.addEventListener(MouseEvent.CLICK, launchBall);
+    
     Lib.current.addChild(this);
   }
 
@@ -118,7 +123,7 @@ class Puggle extends Sprite {
   // actually remove marked actors
   private function reallyRemoveActors() {
     if(_actorsToRemove.length > 0)
-    trace("removing " + _actorsToRemove.length + " actors.");
+    //trace("removing " + _actorsToRemove.length + " actors.");
     for(removeMe in _actorsToRemove) {
       removeMe.destroy();
       _allActors.remove(removeMe);
@@ -135,18 +140,17 @@ class Puggle extends Sprite {
 
   }
 
-  private function makeBall() {
-    var ballActor = new BallActor(this, new Point(500*Math.random(), 10), new
-        Point(200*(Math.random()-0.5), -30));
-
-    ballActor.addEventListener(BallEvent.BALL_OFF_SCREEN,
-        handleBallOffScreen);
-
-    _allActors.push(ballActor);
+  private function launchBall(e:MouseEvent) {
+    var direction:Point = new Point(mouseX, mouseY).subtract(LAUNCH_POINT);
+    direction.normalize(LAUNCH_VELOCITY);
+    
+    var newBall = new BallActor(this, LAUNCH_POINT, direction);
+    newBall.addEventListener(BallEvent.BALL_OFF_SCREEN, handleBallOffScreen);
+    _allActors.push(newBall);
   }
 
   private function handleBallOffScreen(e:BallEvent) {
-    trace("Ball is off screen");
+    //trace("Ball is off screen");
     var ballToRemove = cast(e.currentTarget, BallActor);
     ballToRemove.removeEventListener(BallEvent.BALL_OFF_SCREEN,
         handleBallOffScreen);
