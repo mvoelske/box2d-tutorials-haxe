@@ -52,6 +52,10 @@ class BallActor extends Actor
 
     super(ballBody,ballSprite);
   }
+
+  public function hitBonusTarget() {
+    dispatchEvent(new BallEvent(BallEvent.BALL_HIT_BONUS));
+  }
   
   override function childSpecificUpdating() {
     if (_costume.y > _costume.stage.stageHeight) {

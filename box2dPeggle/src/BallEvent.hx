@@ -6,6 +6,7 @@ import flash.events.Event;
 class BallEvent extends Event
 {
   inline static public var BALL_OFF_SCREEN:String = "BallOffScreen";
+  inline static public var BALL_HIT_BONUS:String = "BallHitBonus";
 
   public function new(type:String, bubbles:Bool=false, cancelable:Bool=false) {
     super(type, bubbles, cancelable);

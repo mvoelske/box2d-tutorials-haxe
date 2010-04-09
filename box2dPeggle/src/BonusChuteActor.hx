@@ -11,6 +11,7 @@ import box2D.common.math.B2Vec2;
 class BonusChuteActor extends Actor
 {
 
+  inline public static var BONUS_TARGET:String = "BonusTarget";
 
   public function new(parent:DisplayObjectContainer, leftBounds:Int,
       rightBounds:Int, yPos:Int) {
@@ -44,15 +45,19 @@ class BonusChuteActor extends Actor
     rightRampShapeDef.restitution = 0.6;
     rightRampShapeDef.density = 0;
 
+
+    // TODO: sensor fails to fire sometimes. turn on debugdraw and look at this
     var centerHoleShapeDef = new B2PolygonDef();
     centerHoleShapeDef.vertexCount = 4;
-    centerHoleShapeDef.vertices[0].Set( -63.5 / PhysiVals.RATIO, -4 / PhysiVals.RATIO);
-    centerHoleShapeDef.vertices[1].Set( 63.5 / PhysiVals.RATIO, -4 / PhysiVals.RATIO);
-    centerHoleShapeDef.vertices[2].Set( 63.5 / PhysiVals.RATIO, 12 / PhysiVals.RATIO);
-    centerHoleShapeDef.vertices[3].Set( -63.5 / PhysiVals.RATIO, 12 / PhysiVals.RATIO);
+    centerHoleShapeDef.vertices[0].Set( -64.5 / PhysiVals.RATIO, 0 / PhysiVals.RATIO);
+    centerHoleShapeDef.vertices[1].Set( 64.0 / PhysiVals.RATIO, 0 / PhysiVals.RATIO);
+    centerHoleShapeDef.vertices[2].Set( 64.0 / PhysiVals.RATIO, 12 / PhysiVals.RATIO);
+    centerHoleShapeDef.vertices[3].Set( -64.5 / PhysiVals.RATIO, 12 / PhysiVals.RATIO);
     centerHoleShapeDef.friction = 0.1;
     centerHoleShapeDef.restitution = 0.6;
     centerHoleShapeDef.density = 0;
+    centerHoleShapeDef.isSensor = true;
+    centerHoleShapeDef.userData = BonusChuteActor.BONUS_TARGET;
 
     var chuteBodyDef = new B2BodyDef();
 

@@ -151,7 +151,13 @@ class Puggle extends Sprite {
     
     var newBall = new BallActor(this, LAUNCH_POINT, direction);
     newBall.addEventListener(BallEvent.BALL_OFF_SCREEN, handleBallOffScreen);
+    newBall.addEventListener(BallEvent.BALL_HIT_BONUS, handleBallInBonusChute);
     _allActors.push(newBall);
+  }
+
+  private function handleBallInBonusChute(e:BallEvent) {
+    trace("!B O N U S!");
+    handleBallOffScreen(e);
   }
 
   private function handleBallOffScreen(e:BallEvent) {
@@ -159,6 +165,8 @@ class Puggle extends Sprite {
     var ballToRemove = cast(e.currentTarget, BallActor);
     ballToRemove.removeEventListener(BallEvent.BALL_OFF_SCREEN,
         handleBallOffScreen);
+    ballToRemove.removeEventListener(BallEvent.BALL_HIT_BONUS,
+        handleBallInBonusChute);
     safeRemoveActor(ballToRemove);
 
     // Remove the pegs that have been lit up at this point
