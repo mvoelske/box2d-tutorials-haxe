@@ -5,10 +5,30 @@
   <frame>
     <library>
       <bitmap id="BMP_Ball" import="img/ball.png"  />
-      <bitmap id="BMP_Peg_Blue" import="img/peg_blue.png"  />
-      <bitmap id="BMP_Peg_Red" import="img/peg_red.png"  />
-      <bitmap id="BMP_Peg_Blue_Lit" import="img/peg_blue_lit.png"  />
-      <bitmap id="BMP_Peg_Red_Lit" import="img/peg_red_lit.png"  />
+
+      <clip id="BMP_Peg_Blue" import="img/peg_blue.png"  />
+      <clip id="BMP_Peg_Red" import="img/peg_red.png"  />
+      <clip id="BMP_Peg_Blue_Lit" import="img/peg_blue_lit.png"  />
+      <clip id="BMP_Peg_Red_Lit" import="img/peg_red_lit.png"  />
+
+      <clip id="PegMovie">
+        <frame>
+          <place id="BMP_Peg_Blue" depth="1" x="-12" y="-12" />
+          <stop />
+        </frame>
+        <frame>
+          <place id="BMP_Peg_Blue_Lit" depth="2" x="-12" y="-12"/>
+          <stop />
+        </frame>
+        <frame>
+          <place id="BMP_Peg_Red" depth="3" x="-12" y="-12"/>
+          <stop />
+        </frame>
+        <frame>
+          <place id="BMP_Peg_Red_Lit" depth="4" x="-12" y="-12"/>
+          <stop />
+        </frame>
+      </clip>
 
       <!--<font id="vera" name="vera" import="font/Vera.ttf" />
         <font id="blox2" name="blox2" import="font/Blox2.ttf" /> -->

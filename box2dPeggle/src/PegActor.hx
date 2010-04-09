@@ -13,7 +13,7 @@ import box2D.dynamics.B2BodyDef;
 import box2D.collision.shapes.B2CircleDef;
 import box2D.common.math.B2Vec2;
 
-import PegMovie;
+import AssetClasses;
 
 class PegActor extends Actor
 {
@@ -42,7 +42,6 @@ class PegActor extends Actor
     pegShapeDef.friction = 0;
     pegShapeDef.restitution = 0.45;
 
-
     // create body def
     var pegBodyDef = new B2BodyDef();
     pegBodyDef.position.Set(location.x / PhysiVals.RATIO, location.y /
@@ -55,10 +54,26 @@ class PegActor extends Actor
     pegBody.CreateShape(pegShapeDef);
     pegBody.SetMassFromShapes();
 
-    // TODO: set movie frame
-
     super(pegBody, pegMovie);
+
+    setMyMovieFrame();
   }
 
+  private function setMyMovieFrame() {
+    trace(cast(_costume, MovieClip).totalFrames);
+    if(_pegType == NORMAL) {
+      if(_beenHit) {
+        cast(_costume, MovieClip).gotoAndStop(2);
+      } else {
+        cast(_costume, MovieClip).gotoAndStop(1);
+      }
+    } else {
+      if(_beenHit) {
+        cast(_costume, MovieClip).gotoAndStop(4);
+      } else {
+        cast(_costume, MovieClip).gotoAndStop(3);
+      }
+    }
+  }
 
 }

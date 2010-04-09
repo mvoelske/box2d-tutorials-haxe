@@ -8,6 +8,7 @@
 
 <xsl:template match="/">package;
 import flash.display.Bitmap;
+import flash.display.MovieClip;
 import flash.display.Sprite;
     <xsl:for-each select="//bitmap">
 class <xsl:value-of select="@id"/> extends Bitmap

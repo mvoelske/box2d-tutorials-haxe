@@ -21,12 +21,14 @@ import PegActor;
 class Puggle extends Sprite {
 
   var _ballActor:BallActor;
+  var _pegActors:Array<PegActor>;
 
   public function new() {
     super();
 
     setupPhysicsWorld();
     makeBall();
+    addSomePegs();
     addEventListener(Event.ENTER_FRAME, newFrameListener);
 
     Lib.current.addChild(this);
@@ -36,12 +38,22 @@ class Puggle extends Sprite {
     PhysiVals._world.Step(1 / 30.0, 10);
 
     _ballActor.updateNow();
+
+    for (pa in _pegActors) {
+      pa.updateNow();
+    }
   }
 
   private function makeBall() {
     _ballActor = new BallActor(this, new Point(200, 10), new Point(50, -30));
   }
 
+  private function addSomePegs() {
+    var peg1:PegActor = new PegActor(this, new Point(200, 70), PegActor.NORMAL);
+    var peg2:PegActor = new PegActor(this, new Point(230, 70), PegActor.GOAL);
+    var peg3:PegActor = new PegActor(this, new Point(260, 70), PegActor.NORMAL);
+    _pegActors = [peg1, peg2, peg3];
+  }
 
   private function setupPhysicsWorld() {
     var worldBounds:B2AABB = new B2AABB();
