@@ -20,17 +20,20 @@ import BallActor;
 import PegActor;
 import ArbiStaticActor;
 import PuggleContactListener;
+import PegEvent;
 
 class Puggle extends Sprite {
 
   var _allActors:Array<Actor>;
   var _actorsToRemove:Array<Actor>;
+  var _pegsLitUp:Array<PegActor>;
 
   public function new() {
     super();
 
     _allActors = [];
     _actorsToRemove = [];
+    _pegsLitUp = [];
 
     setupPhysicsWorld();
     makeBall();
@@ -53,6 +56,7 @@ class Puggle extends Sprite {
       for (pegX in new StepIter(startX, pegBounds.right, horizSpacing)) {
           var newPeg:PegActor = new PegActor(this, new Point(pegX, pegY),
             PegActor.NORMAL);
+          newPeg.addEventListener(PegEvent.PEG_LIT_UP, handlePegLitUp);
           _allActors.push(newPeg);
       }
     }
@@ -101,7 +105,6 @@ class Puggle extends Sprite {
     _allActors.push(rightRamp3);
   }/*}}}*/
 
-
   private function newFrameListener(e:Event) {
     PhysiVals._world.Step(1 / 30.0, 10);
 
@@ -114,6 +117,8 @@ class Puggle extends Sprite {
 
   // actually remove marked actors
   private function reallyRemoveActors() {
+    if(_actorsToRemove.length > 0)
+    trace("removing " + _actorsToRemove.length + " actors.");
     for(removeMe in _actorsToRemove) {
       removeMe.destroy();
       _allActors.remove(removeMe);
@@ -146,6 +151,22 @@ class Puggle extends Sprite {
     ballToRemove.removeEventListener(BallEvent.BALL_OFF_SCREEN,
         handleBallOffScreen);
     safeRemoveActor(ballToRemove);
+
+    // Remove the pegs that have been lit up at this point
+    for(pegToRemove in _pegsLitUp) {
+      safeRemoveActor(pegToRemove);
+    }
+    _pegsLitUp = [];
+
+  }
+
+  private function handlePegLitUp(e:PegEvent) {
+    // record the fact that the peg has been lit, remove later
+    var pegActor:PegActor = cast(e.currentTarget, PegActor);
+    pegActor.removeEventListener(PegEvent.PEG_LIT_UP, handlePegLitUp);
+    if(!Lambda.has(_pegsLitUp, pegActor)) {
+      _pegsLitUp.push(pegActor);
+    }
   }
 
   private function setupPhysicsWorld() {

@@ -14,6 +14,7 @@ import box2D.collision.shapes.B2CircleDef;
 import box2D.common.math.B2Vec2;
 
 import AssetClasses;
+import PegEvent;
 
 class PegActor extends Actor
 {
@@ -62,6 +63,7 @@ class PegActor extends Actor
   public function hitByBall() {
     if(!_beenHit) {
       _beenHit = true;
+      dispatchEvent(new PegEvent(PegEvent.PEG_LIT_UP));
       setMyMovieFrame();
     }
   }
