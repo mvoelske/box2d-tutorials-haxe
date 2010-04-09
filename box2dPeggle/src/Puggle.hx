@@ -18,6 +18,7 @@ import box2D.dynamics.B2BodyDef;
 import Actor;
 import BallActor;
 import PegActor;
+import ArbiStaticActor;
 
 class Puggle extends Sprite {
 
