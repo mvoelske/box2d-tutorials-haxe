@@ -22,6 +22,7 @@ import PegActor;
 import ArbiStaticActor;
 import PuggleContactListener;
 import PegEvent;
+import BonusChuteActor;
 
 class Puggle extends Sprite {
 
@@ -30,7 +31,7 @@ class Puggle extends Sprite {
   var _pegsLitUp:Array<PegActor>;
 
   inline private static var LAUNCH_POINT:Point = new Point(323, 10);
-  inline private static var LAUNCH_VELOCITY:Float = 190.0;
+  inline private static var LAUNCH_VELOCITY:Float = 390.0;
 
   public function new() {
     super();
@@ -108,6 +109,10 @@ class Puggle extends Sprite {
     var rightRamp3 = new ArbiStaticActor(this, new Point(646, 388),
         rightRampCoords);
     _allActors.push(rightRamp3);
+
+
+    var bonusChute:BonusChuteActor = new BonusChuteActor(this, 200, 450, 580);
+    _allActors.push(bonusChute);
   }/*}}}*/
 
   private function newFrameListener(e:Event) {

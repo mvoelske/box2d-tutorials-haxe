@@ -5,6 +5,7 @@
   <frame>
     <library>
       <bitmap id="BMP_Ball" import="img/ball.png"  />
+      <bitmap id="BMP_BonusChuteGraphic" import="img/bonus_chute.png" />
 
       <clip id="BMP_Peg_Blue" import="img/peg_blue.png"  />
       <clip id="BMP_Peg_Red" import="img/peg_red.png"  />
