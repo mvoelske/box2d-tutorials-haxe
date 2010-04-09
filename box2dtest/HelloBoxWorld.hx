@@ -78,7 +78,7 @@ class HelloBoxWorld extends MovieClip {
     universeSize.upperBound.Set( 3000 / RATIO,  3000 / RATIO);
 
     // 2. define gravity
-    var gravity:B2Vec2 = new B2Vec2(0, 9.8);
+    var gravity:B2Vec2 = new B2Vec2(0, 3.8);
 
     // 3. ignore sleeping objects?
     var ignoreSleeping:Bool = true;
@@ -138,10 +138,10 @@ class HelloBoxWorld extends MovieClip {
   
   private function addARandomCrate() {
     var fallingCrateDef:B2PolygonDef = new B2PolygonDef();
-    fallingCrateDef.SetAsBox(randomInt(5,40) / RATIO, randomInt(5,40) / RATIO);
+    fallingCrateDef.SetAsBox(randomInt(5,10) / RATIO, randomInt(5,40) / RATIO);
     fallingCrateDef.friction = 0.8;
-    fallingCrateDef.restitution = 0.3;
-    fallingCrateDef.density = 0.7;
+    fallingCrateDef.restitution = 0.99;
+    fallingCrateDef.density = 0.2 + Math.random() * 5;
 
     var fallingBodyDef:B2BodyDef = new B2BodyDef();
     fallingBodyDef.position.Set(randomInt(15,530) / RATIO, 

@@ -6,8 +6,7 @@
 <xsl:output indent="no" omit-xml-declaration="yes"
                 method="text" encoding="UTF-8" />
 
-<xsl:template match="/">
-package;
+<xsl:template match="/">package;
 import flash.display.Bitmap;
 import flash.display.Sprite;
     <xsl:for-each select="//bitmap">

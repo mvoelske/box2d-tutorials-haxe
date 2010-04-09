@@ -4,7 +4,7 @@
   <background color="#ffffff"/>
   <frame>
     <library>
-      <bitmap id="BallBitmap" class="BallBitmap" import="img/ball.png"  />
+      <bitmap id="BMP_Ball" import="img/ball.png"  />
 
       <!--<font id="vera" name="vera" import="font/Vera.ttf" />
         <font id="blox2" name="blox2" import="font/Blox2.ttf" /> -->
