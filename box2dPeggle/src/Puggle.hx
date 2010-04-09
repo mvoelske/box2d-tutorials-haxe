@@ -19,6 +19,7 @@ import Actor;
 import BallActor;
 import PegActor;
 import ArbiStaticActor;
+import PuggleContactListener;
 
 class Puggle extends Sprite {
 
@@ -108,7 +109,8 @@ class Puggle extends Sprite {
   }
 
   private function makeBall() {
-    var ballActor = new BallActor(this, new Point(200, 10), new Point(-50, -30));
+    var ballActor = new BallActor(this, new Point(200*Math.random(), 10), new
+        Point(-50*Math.random(), -30));
     _allActors.push(ballActor);
   }
 
@@ -123,6 +125,7 @@ class Puggle extends Sprite {
     var allowSleep:Bool = true;
 
     PhysiVals._world = new B2World(worldBounds, gravity, allowSleep);
+    PhysiVals._world.SetContactListener(new PuggleContactListener());
   }
 
 
