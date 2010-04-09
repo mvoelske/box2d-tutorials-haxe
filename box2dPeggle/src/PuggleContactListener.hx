@@ -15,12 +15,15 @@ class PuggleContactListener extends B2ContactListener {
   override public function Add(point:B2ContactPoint) {
     trace("BAM!");
 
+    if((Std.is(point.shape1.GetBody().GetUserData(), BallActor) ||
+        Std.is(point.shape2.GetBody().GetUserData(), BallActor))) {
 
-    if((Std.is(point.shape1.GetBody().GetUserData(), PegActor) &&
-        Std.is(point.shape2.GetBody().GetUserData(), BallActor)) ||
-       (Std.is(point.shape1.GetBody().GetUserData(), BallActor) &&
-        Std.is(point.shape2.GetBody().GetUserData(), PegActor))) {
-      trace("ball hit a peg");
+      if(Std.is(point.shape1.GetBody().GetUserData(), PegActor)) {
+        cast(point.shape1.GetBody().GetUserData(),PegActor).hitByBall();
+      } else if(Std.is(point.shape2.GetBody().GetUserData(), PegActor)) {
+        cast(point.shape2.GetBody().GetUserData(),PegActor).hitByBall();
+      }
+
     }
 
     super.Add(point);

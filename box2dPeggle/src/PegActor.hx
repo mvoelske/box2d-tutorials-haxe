@@ -59,6 +59,13 @@ class PegActor extends Actor
     setMyMovieFrame();
   }
 
+  public function hitByBall() {
+    if(!_beenHit) {
+      _beenHit = true;
+      setMyMovieFrame();
+    }
+  }
+
   private function setMyMovieFrame() {
     if(_pegType == NORMAL) {
       if(_beenHit) {
