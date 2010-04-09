@@ -6,6 +6,7 @@ import BallSprite;
 import flash.Lib;
 import flash.display.Sprite;
 import flash.events.Event;
+import flash.geom.Point;
 
 import box2D.collision.B2AABB;
 import box2D.collision.shapes.B2CircleDef;
@@ -15,13 +16,11 @@ import box2D.dynamics.B2Body;
 import box2D.dynamics.B2BodyDef;
 
 import Actor;
+import BallActor;
 
 class Puggle extends Sprite {
 
-  var _ballSprite:Sprite;
-  var _ballBody:B2Body;
-
-  var _ballActor:Actor;
+  var _ballActor:BallActor;
 
   public function new() {
     super();
@@ -40,23 +39,7 @@ class Puggle extends Sprite {
   }
 
   private function makeBall() {
-    // Create Sprite
-    _ballSprite = new BallSprite();
-    addChild(_ballSprite);
-
-    // Create B2Body
-    var ballShapeDef:B2CircleDef = new B2CircleDef();
-    ballShapeDef.radius = 15 / PhysiVals.RATIO;
-    ballShapeDef.density = 1.0;
-
-    var ballBodyDef : B2BodyDef = new B2BodyDef();
-    ballBodyDef.position.Set(200 / PhysiVals.RATIO, 10 / PhysiVals.RATIO);
-  
-    _ballBody = PhysiVals._world.CreateBody(ballBodyDef);
-    _ballBody.CreateShape(ballShapeDef);
-    _ballBody.SetMassFromShapes();
-
-    _ballActor = new Actor(_ballBody, _ballSprite);
+    _ballActor = new BallActor(this, new Point(200, 10), new Point(50, -30));
   }
 
 
