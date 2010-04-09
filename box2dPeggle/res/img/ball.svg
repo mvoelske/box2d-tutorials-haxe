@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="32"
+   height="32"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.47 r22583"
+   sodipodi:docname="ball.svg"
+   inkscape:export-filename="/home/fmiv8532/workspace/haxe/box2dPeggle/res/img/ball.png"
+   inkscape:export-xdpi="90.60611"
+   inkscape:export-ydpi="90.60611">
+  <defs
+     id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective10" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.8"
+     inkscape:cx="22.128594"
+     inkscape:cy="-9.8556541"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="714"
+     inkscape:window-height="779"
+     inkscape:window-x="0"
+     inkscape:window-y="19"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(1,1)">
+    <g
+       id="BallSprite"
+       swfClass="BallSprite">
+      <path
+         d="M 30,15 C 30,23.284271 23.284271,30 15,30 6.7157288,30 0,23.284271 0,15 0,6.7157288 6.7157288,0 15,0 23.284271,0 30,6.7157288 30,15 z"
+         sodipodi:ry="15"
+         sodipodi:rx="15"
+         sodipodi:cy="15"
+         sodipodi:cx="15"
+         id="path2824"
+         style="fill:#cccccc;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         sodipodi:type="arc" />
+      <path
+         sodipodi:nodetypes="cssssssssssssssssssssssssssssssssc"
+         id="path3612"
+         d="M 18.092094,7.5229404 C 17.853085,7.2860633 16.989529,6.7489359 17.375065,6.8123113 c 0.493727,0.08116 0.76204,0.5425798 1.179672,0.7866794 0.130446,0.076243 0.322991,0.00891 0.462642,0.07605 0.974705,0.4685907 -0.247687,-0.050941 0.242855,0.336302 0.111764,0.088229 0.32299,0.00891 0.462644,0.07605 0.09875,0.047475 0.138338,0.1396895 0.237086,0.1871642 0.06983,0.033569 0.175439,-0.00609 0.231322,0.038025 0.05588,0.044115 -0.03043,0.099005 0.0058,0.1491376 0.50535,0.6998036 -0.02213,-0.1620596 0.468408,0.2251882 0.05588,0.044116 -0.05011,0.1050251 0.0058,0.1491402 0.111765,0.088229 0.35088,-0.012182 0.462645,0.076051 0.05588,0.044116 -0.05012,0.105023 0.0058,0.1491374 0.111763,0.088229 0.350878,-0.012182 0.462643,0.07605 0.111763,0.08823 -0.100234,0.2100466 0.01153,0.2982768 0.05588,0.044116 0.175439,-0.00612 0.231322,0.038029 0.111765,0.08823 -0.06087,0.1980113 0.01153,0.2982769 0.50535,0.699803 -0.02214,-0.1620602 0.468409,0.2251874 0.111765,0.088231 -0.100231,0.2100486 0.01153,0.2982786 0.05588,0.04412 0.175441,-0.0061 0.231322,0.03803 0.111765,0.08823 -0.100231,0.210045 0.01153,0.298275 0.05588,0.04412 0.17544,-0.0061 0.231323,0.03802 0.05588,0.04412 -0.05012,0.105023 0.0058,0.149139 0.05588,0.04412 0.175439,-0.0061 0.231322,0.03802 0.05587,0.04412 0.0039,0.09942 0.0058,0.149137 0.0019,0.04971 0.0039,0.09942 0.0058,0.149137 0.0096,0.248566 0.01922,0.497129 0.02883,0.745693 0.0019,0.04971 -0.05012,0.105023 0.0058,0.149139 0.05587,0.04412 0.175439,-0.0061 0.231321,0.03802 0.0095,0.0075 0.02095,0.541784 0.02306,0.596552 0.0019,0.04972 0.05893,0.12295 0.0058,0.149138 -0.05317,0.02619 -0.178159,-0.06421 -0.231321,-0.03802 -0.05317,0.02619 0.08287,0.161815 0.0058,0.149139 -0.07711,-0.01268 0.01345,0.347989 0.01153,0.298277"
+         style="fill:none;stroke:#f3f3f3;stroke-width:3.28600001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    </g>
+  </g>
+</svg>

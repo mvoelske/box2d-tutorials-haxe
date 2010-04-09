@@ -137,15 +137,12 @@ class HelloBoxWorld extends MovieClip {
 
   
   private function addARandomCrate() {
-    // 1. add falling block
-
     var fallingCrateDef:B2PolygonDef = new B2PolygonDef();
     fallingCrateDef.SetAsBox(randomInt(5,40) / RATIO, randomInt(5,40) / RATIO);
     fallingCrateDef.friction = 0.8;
     fallingCrateDef.restitution = 0.3;
     fallingCrateDef.density = 0.7;
 
-    // 2. set it to 250, -30
     var fallingBodyDef:B2BodyDef = new B2BodyDef();
     fallingBodyDef.position.Set(randomInt(15,530) / RATIO, 
         randomInt(-100,-10) / RATIO);
@@ -154,7 +151,6 @@ class HelloBoxWorld extends MovieClip {
     var fallingCrate = _world.CreateBody(fallingBodyDef);
     fallingCrate.CreateShape(fallingCrateDef);
     fallingCrate.SetMassFromShapes();
-
   }
 
   private function randomInt(lowVal:Int, hiVal:Int) : Int {

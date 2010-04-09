@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+  
+<movie version="9" width="600" height="300" framerate="24">
+  <background color="#ffffff"/>
+  <frame>
+    <library>
+      <clip id="BallSprite" class="BallSprite" import="img/ball.png"  />
+
+      <!--<font id="vera" name="vera" import="font/Vera.ttf" />
+        <font id="blox2" name="blox2" import="font/Blox2.ttf" /> -->
+    </library>
+  </frame>
+</movie>
