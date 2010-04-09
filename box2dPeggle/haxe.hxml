@@ -1,5 +1,7 @@
 -swf-version 9
 -swf-header 550:400:30:414647
 -swf-lib res/library.swf
+-cp gen
+-cp src
 -debug
 -lib box2d
