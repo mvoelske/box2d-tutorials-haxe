@@ -6,6 +6,7 @@ import flash.Lib;
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.geom.Point;
+import flash.geom.Rectangle;
 
 import box2D.collision.B2AABB;
 import box2D.collision.shapes.B2CircleDef;
@@ -20,39 +21,62 @@ import PegActor;
 
 class Puggle extends Sprite {
 
-  var _ballActor:BallActor;
-  var _pegActors:Array<PegActor>;
+  var _allActors:Array<Actor>;
 
   public function new() {
     super();
 
+    _allActors = [];
+
     setupPhysicsWorld();
     makeBall();
-    addSomePegs();
+    createLevel();
     addEventListener(Event.ENTER_FRAME, newFrameListener);
 
     Lib.current.addChild(this);
   }
 
+
+  private function createLevel() {
+    var horizSpacing = 36;
+    var vertSpacing = 36;
+    var pegBounds:Rectangle = new Rectangle(114, 226, 418, 255);
+    var flipRow:Bool = false;
+
+    trace(pegBounds.top);
+    for (pegY in 
+        new StepIntIter(Math.floor(pegBounds.top), Math.floor(pegBounds.bottom), 
+          vertSpacing)) {
+      var startX:Int = Math.floor(pegBounds.left + (flipRow ? 0 : horizSpacing/2));
+      flipRow = !flipRow;
+      for (pegX in new StepIntIter(startX, Math.floor(pegBounds.right),
+            horizSpacing)) {
+          var newPeg:PegActor = new PegActor(this, new Point(pegX, pegY),
+            PegActor.NORMAL);
+          _allActors.push(newPeg);
+      }
+    }
+
+    trace(_allActors.length);
+    trace(PhysiVals._world.m_bodyCount);
+
+    // TODO: turn some pegs into goal pegs
+    // TODO: keep track of which these are
+
+  }
+
+
   private function newFrameListener(e:Event) {
     PhysiVals._world.Step(1 / 30.0, 10);
 
-    _ballActor.updateNow();
-
-    for (pa in _pegActors) {
+    for (pa in _allActors) {
       pa.updateNow();
     }
   }
 
   private function makeBall() {
-    _ballActor = new BallActor(this, new Point(200, 10), new Point(50, -30));
-  }
-
-  private function addSomePegs() {
-    var peg1:PegActor = new PegActor(this, new Point(200, 70), PegActor.NORMAL);
-    var peg2:PegActor = new PegActor(this, new Point(230, 70), PegActor.GOAL);
-    var peg3:PegActor = new PegActor(this, new Point(260, 70), PegActor.NORMAL);
-    _pegActors = [peg1, peg2, peg3];
+    var ballActor = new BallActor(this, new Point(200, 10), new Point(50, -30));
+    _allActors.push(ballActor);
   }
 
   private function setupPhysicsWorld() {
@@ -73,4 +97,13 @@ class Puggle extends Sprite {
     new Puggle();
   }
 
+}
+
+
+class StepIntIter {
+  var min:Int; var max:Int; var step:Int;
+  public function new (min:Int, max:Int, step:Int) {
+    this.min=min;this.max=max;this.step=step; }
+  public function hasNext() { return min + step < max;}
+  public function next() { var m = min; min += step; return m;} 
 }
