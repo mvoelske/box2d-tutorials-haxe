@@ -16,8 +16,8 @@
    inkscape:version="0.47 r22583"
    sodipodi:docname="ball.svg"
    inkscape:export-filename="/home/fmiv8532/workspace/haxe/box2dPeggle/res/img/ball.png"
-   inkscape:export-xdpi="90.60611"
-   inkscape:export-ydpi="90.60611">
+   inkscape:export-xdpi="84.375"
+   inkscape:export-ydpi="84.375">
   <defs
      id="defs4">
     <inkscape:perspective
@@ -36,7 +36,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.8"
-     inkscape:cx="22.128594"
+     inkscape:cx="7.8428799"
      inkscape:cy="-9.8556541"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -67,7 +67,7 @@
        id="BallSprite"
        swfClass="BallSprite">
       <path
-         d="M 30,15 C 30,23.284271 23.284271,30 15,30 6.7157288,30 0,23.284271 0,15 0,6.7157288 6.7157288,0 15,0 23.284271,0 30,6.7157288 30,15 z"
+         d="M 30,15 A 15,15 0 1 1 0,15 15,15 0 1 1 30,15 z"
          sodipodi:ry="15"
          sodipodi:rx="15"
          sodipodi:cy="15"

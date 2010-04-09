@@ -13,5 +13,4 @@ class BallSprite extends Sprite {
     addChild(bmp);
   }
 
-
 }

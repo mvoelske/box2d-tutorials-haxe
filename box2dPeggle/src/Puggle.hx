@@ -1,7 +1,6 @@
 package;
 
 import PhysiVals;
-import BallSprite;
 
 import flash.Lib;
 import flash.display.Sprite;
@@ -17,6 +16,7 @@ import box2D.dynamics.B2BodyDef;
 
 import Actor;
 import BallActor;
+import PegActor;
 
 class Puggle extends Sprite {
 
