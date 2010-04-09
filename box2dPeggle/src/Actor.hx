@@ -16,6 +16,7 @@ class Actor extends EventDispatcher {
     super();
 
     _body = myBody;
+    _body.SetUserData(this);
     _costume = myCostume;
 
     updateMyLook();

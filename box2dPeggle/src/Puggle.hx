@@ -109,8 +109,8 @@ class Puggle extends Sprite {
   }
 
   private function makeBall() {
-    var ballActor = new BallActor(this, new Point(200*Math.random(), 10), new
-        Point(-50*Math.random(), -30));
+    var ballActor = new BallActor(this, new Point(500*Math.random(), 10), new
+        Point(200*(Math.random()-0.5), -30));
     _allActors.push(ballActor);
   }
 
