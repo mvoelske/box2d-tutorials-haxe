@@ -55,8 +55,7 @@ class BallActor extends Actor
   
   override function childSpecificUpdating() {
     if (_costume.y > _costume.stage.stageHeight) {
-      //trace ("Exit Ball!");
-      // TODO: remove ball, give player a new one
+      dispatchEvent(new BallEvent(BallEvent.BALL_OFF_SCREEN));
     }
     super.childSpecificUpdating();
   }

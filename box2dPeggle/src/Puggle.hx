@@ -133,7 +133,19 @@ class Puggle extends Sprite {
   private function makeBall() {
     var ballActor = new BallActor(this, new Point(500*Math.random(), 10), new
         Point(200*(Math.random()-0.5), -30));
+
+    ballActor.addEventListener(BallEvent.BALL_OFF_SCREEN,
+        handleBallOffScreen);
+
     _allActors.push(ballActor);
+  }
+
+  private function handleBallOffScreen(e:BallEvent) {
+    trace("Ball is off screen");
+    var ballToRemove = cast(e.currentTarget, BallActor);
+    ballToRemove.removeEventListener(BallEvent.BALL_OFF_SCREEN,
+        handleBallOffScreen);
+    safeRemoveActor(ballToRemove);
   }
 
   private function setupPhysicsWorld() {
