@@ -24,11 +24,13 @@ import PuggleContactListener;
 class Puggle extends Sprite {
 
   var _allActors:Array<Actor>;
+  var _actorsToRemove:Array<Actor>;
 
   public function new() {
     super();
 
     _allActors = [];
+    _actorsToRemove = [];
 
     setupPhysicsWorld();
     makeBall();
@@ -39,7 +41,7 @@ class Puggle extends Sprite {
   }
 
 
-  private function createLevel() {
+  private function createLevel() {/*{{{*/
     var horizSpacing = 36;
     var vertSpacing = 36;
     var pegBounds:Rectangle = new Rectangle(114, 226, 450, 320);
@@ -97,7 +99,7 @@ class Puggle extends Sprite {
     var rightRamp3 = new ArbiStaticActor(this, new Point(646, 388),
         rightRampCoords);
     _allActors.push(rightRamp3);
-  }
+  }/*}}}*/
 
 
   private function newFrameListener(e:Event) {
@@ -106,6 +108,26 @@ class Puggle extends Sprite {
     for (pa in _allActors) {
       pa.updateNow();
     }
+
+    reallyRemoveActors();
+  }
+
+  // actually remove marked actors
+  private function reallyRemoveActors() {
+    for(removeMe in _actorsToRemove) {
+      removeMe.destroy();
+      _allActors.remove(removeMe);
+    }
+    _actorsToRemove= [];
+  }
+
+  // mark actor to remove later, at a safe time
+  public function safeRemoveActor(actorToRemove:Actor) {
+
+    if(!Lambda.has(_actorsToRemove, actorToRemove)) {
+      _actorsToRemove.push(actorToRemove);
+    }
+
   }
 
   private function makeBall() {

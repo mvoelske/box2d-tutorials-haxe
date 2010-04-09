@@ -34,9 +34,22 @@ class Actor extends EventDispatcher {
     // overridden by subclasses
   }
 
+  function cleanUpBeforeRemoving() {
+    // does nothing
+    // overridden by subclasses
+  }
+
+  // remove the actor from the world
   public function destroy() {
-    // remove the actor from the world
-    // TODO
+    // remove evt listeners, misc cleanup
+    cleanUpBeforeRemoving();
+
+    // remove costume sprite from display
+    _costume.parent.removeChild(_costume);
+    
+    // destroy the body
+    PhysiVals._world.DestroyBody(_body);
+
   }
 
   private function updateMyLook() {
