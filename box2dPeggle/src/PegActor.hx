@@ -60,7 +60,6 @@ class PegActor extends Actor
   }
 
   private function setMyMovieFrame() {
-    trace(cast(_costume, MovieClip).totalFrames);
     if(_pegType == NORMAL) {
       if(_beenHit) {
         cast(_costume, MovieClip).gotoAndStop(2);

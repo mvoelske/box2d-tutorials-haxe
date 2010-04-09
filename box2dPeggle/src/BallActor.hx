@@ -55,7 +55,7 @@ class BallActor extends Actor
   
   override function childSpecificUpdating() {
     if (_costume.y > _costume.stage.stageHeight) {
-      trace ("Exit Ball!");
+      //trace ("Exit Ball!");
     }
     super.childSpecificUpdating();
   }
