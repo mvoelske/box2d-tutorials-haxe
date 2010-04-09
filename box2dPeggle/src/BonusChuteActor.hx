@@ -2,6 +2,7 @@ package;
 
 import flash.display.DisplayObjectContainer;
 import flash.display.Sprite;
+import flash.geom.Point;
 
 import box2D.dynamics.B2Body;
 import box2D.dynamics.B2BodyDef;
@@ -12,9 +13,18 @@ class BonusChuteActor extends Actor
 {
 
   inline public static var BONUS_TARGET:String = "BonusTarget";
+  private var _bounds:Array<Int>;
+  private var _yPos:Int;
+  private var _direction:Int;
 
   public function new(parent:DisplayObjectContainer, leftBounds:Int,
       rightBounds:Int, yPos:Int) {
+
+    _bounds = [leftBounds, rightBounds];
+    _yPos = yPos;
+    _direction = 1;
+
+
     var chuteGraphic:Sprite = new BonusChuteSprite();
     parent.addChild(chuteGraphic);
 
@@ -30,7 +40,7 @@ class BonusChuteActor extends Actor
 
     leftRampShapeDef.friction = 0.1;
     leftRampShapeDef.restitution = 0.6;
-    leftRampShapeDef.density = 0;
+    leftRampShapeDef.density = 1;
 
     var rightRampShapeDef:B2PolygonDef = new B2PolygonDef();
     rightRampShapeDef.vertexCount = 3;
@@ -43,7 +53,7 @@ class BonusChuteActor extends Actor
 
     rightRampShapeDef.friction = 0.1;
     rightRampShapeDef.restitution = 0.6;
-    rightRampShapeDef.density = 0;
+    rightRampShapeDef.density = 1;
 
 
     // TODO: sensor fails to fire sometimes. turn on debugdraw and look at this
@@ -55,7 +65,7 @@ class BonusChuteActor extends Actor
     centerHoleShapeDef.vertices[3].Set( -64.5 / PhysiVals.RATIO, 12 / PhysiVals.RATIO);
     centerHoleShapeDef.friction = 0.1;
     centerHoleShapeDef.restitution = 0.6;
-    centerHoleShapeDef.density = 0;
+    centerHoleShapeDef.density = 1;
     centerHoleShapeDef.isSensor = true;
     centerHoleShapeDef.userData = BonusChuteActor.BONUS_TARGET;
 
@@ -72,6 +82,21 @@ class BonusChuteActor extends Actor
     chuteBody.SetMassFromShapes();
 
     super(chuteBody, chuteGraphic);
+  }
+
+
+  override function childSpecificUpdating() {
+
+    if(_costume.x > _bounds[1]) {
+      _direction = -1;
+    } else if(_costume.x < _bounds[0]) {
+      _direction = 1;
+    }
+    var newLocation:Point = new Point(_costume.x + (_direction*2), _yPos);
+    _body.SetXForm(new B2Vec2(newLocation.x / PhysiVals.RATIO, 
+                              newLocation.y / PhysiVals.RATIO), 0);
+
+    super.childSpecificUpdating();
   }
 
 }
