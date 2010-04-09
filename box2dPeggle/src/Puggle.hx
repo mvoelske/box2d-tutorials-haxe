@@ -14,11 +14,14 @@ import box2D.dynamics.B2World;
 import box2D.dynamics.B2Body;
 import box2D.dynamics.B2BodyDef;
 
+import Actor;
 
 class Puggle extends Sprite {
 
   var _ballSprite:Sprite;
   var _ballBody:B2Body;
+
+  var _ballActor:Actor;
 
   public function new() {
     super();
@@ -33,10 +36,7 @@ class Puggle extends Sprite {
   private function newFrameListener(e:Event) {
     PhysiVals._world.Step(1 / 30.0, 10);
 
-    _ballSprite.x = _ballBody.GetPosition().x * PhysiVals.RATIO;
-    _ballSprite.y = _ballBody.GetPosition().y * PhysiVals.RATIO;
-
-    _ballSprite.rotation = _ballBody.GetAngle() * 180 / Math.PI;
+    _ballActor.updateNow();
   }
 
   private function makeBall() {
@@ -55,6 +55,8 @@ class Puggle extends Sprite {
     _ballBody = PhysiVals._world.CreateBody(ballBodyDef);
     _ballBody.CreateShape(ballShapeDef);
     _ballBody.SetMassFromShapes();
+
+    _ballActor = new Actor(_ballBody, _ballSprite);
   }
 
 
