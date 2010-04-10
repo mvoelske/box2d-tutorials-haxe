@@ -4,6 +4,7 @@ import PhysiVals;
 
 import flash.display.DisplayObject;
 import flash.events.EventDispatcher;
+import flash.geom.Point;
 
 import box2D.dynamics.B2Body;
 
@@ -50,6 +51,10 @@ class Actor extends EventDispatcher {
     // destroy the body
     PhysiVals._world.DestroyBody(_body);
 
+  }
+
+  public function getSpriteLoc() : Point {
+    return new Point(_costume.x, _costume.y);
   }
 
   private function updateMyLook() {

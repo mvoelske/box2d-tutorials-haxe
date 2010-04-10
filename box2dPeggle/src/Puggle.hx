@@ -83,6 +83,7 @@ class Puggle extends Sprite {
     }
 
     // turn some pegs into goal pegs
+    // TODO: more than one goal peg
     var randomPegNum = Math.floor(Math.random() * allPegs.length);
     allPegs[randomPegNum].setType(PegActor.GOAL);
 
@@ -141,7 +142,31 @@ class Puggle extends Sprite {
       pa.updateNow();
     }
 
+    checkForZooming();
+
     reallyRemoveActors();
+  }
+
+  private function checkForZooming() {
+    if(_goalPegs.length == 1 && _currentBall != null) {
+      var finalPeg = _goalPegs[0];
+      var p1 = finalPeg.getSpriteLoc();
+      var p2 = _currentBall.getSpriteLoc();
+      // TODO: don't call zoomIn every frame
+      // TODO: fix flickering
+      if(getDistSquared(p1,p2) < 75*75) {
+        _camera.zoomTo(p1);
+      } else {
+        _camera.zoomOut();
+      }
+    } else if(_goalPegs.length == 0) {
+      _camera.zoomOut();
+    }
+  }
+
+  private function getDistSquared(p1:Point, p2:Point) : Int {
+    var dx = (p2.x-p1.x); var dy = (p2.y - p1.y);
+    return Math.round(dx*dx + dy*dy);
   }
 
   // actually remove marked actors
@@ -198,7 +223,6 @@ class Puggle extends Sprite {
       safeRemoveActor(pegToRemove);
     }
     _pegsLitUp = [];
-
   }
 
   private function handlePegLitUp(e:PegEvent) {
@@ -207,7 +231,11 @@ class Puggle extends Sprite {
     pegActor.removeEventListener(PegEvent.PEG_LIT_UP, handlePegLitUp);
     if(!Lambda.has(_pegsLitUp, pegActor)) {
       _pegsLitUp.push(pegActor);
+      if(Lambda.has(_goalPegs, pegActor)) {
+        _goalPegs.remove(pegActor);
+      }
     }
+    
   }
 
   private function setupPhysicsWorld() {
