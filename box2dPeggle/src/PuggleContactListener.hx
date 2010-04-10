@@ -21,11 +21,15 @@ class PuggleContactListener extends B2ContactListener {
       if(Std.is(point.shape1.GetBody().GetUserData(), PegActor)) {
         cast(point.shape1.GetBody().GetUserData(),PegActor).hitByBall();
         cast(point.shape1.GetBody().GetUserData(),PegActor).setCollisionInfo(
-            point.shape2.GetBody().GetLinearVelocity());
+            point.shape2.GetBody().GetLinearVelocity(),
+            point.shape2.GetBody().GetMass()
+            );
       } else if(Std.is(point.shape2.GetBody().GetUserData(), PegActor)) {
         cast(point.shape2.GetBody().GetUserData(),PegActor).hitByBall();
         cast(point.shape2.GetBody().GetUserData(),PegActor).setCollisionInfo(
-            point.shape1.GetBody().GetLinearVelocity());
+            point.shape1.GetBody().GetLinearVelocity(),
+            point.shape1.GetBody().GetMass()
+            );
 
       } else if(Std.is(point.shape1.GetUserData(), String) &&
           cast(point.shape1.GetUserData(),String) ==

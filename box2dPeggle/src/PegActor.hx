@@ -31,7 +31,7 @@ class PegActor extends Actor
   private var _turnNormalWhenSafe:Bool;
   private var _turnedNormal:Bool;
 
-  private var _ballVel:B2Vec2;
+  private var _ballForceToApply:B2Vec2;
 
   public function new(parent:DisplayObjectContainer, location:Point, type:Int) {
     _beenHit = false;
@@ -84,8 +84,9 @@ class PegActor extends Actor
     super.childSpecificUpdating();
   }
 
-  public function setCollisionInfo(ballVel:B2Vec2) {
-    _ballVel = ballVel.Copy();
+  public function setCollisionInfo(ballVel:B2Vec2, ballMass:Float) {
+    _ballForceToApply = ballVel.Copy();
+    _ballForceToApply.Multiply(ballMass);
   }
 
   private function turnNormal() {
@@ -97,7 +98,7 @@ class PegActor extends Actor
     }
     _body.SetMassFromShapes();
     _body.WakeUp();
-    _body.SetLinearVelocity(_ballVel);
+    _body.ApplyImpulse(_ballForceToApply, _body.GetWorldCenter());
   }
 
 
