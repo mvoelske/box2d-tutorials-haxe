@@ -68,6 +68,11 @@ class PegActor extends Actor
     }
   }
 
+  public function setType(newType:Int) {
+    _pegType = newType;
+    setMyMovieFrame();
+  }
+
   private function setMyMovieFrame() {
     if(_pegType == NORMAL) {
       if(_beenHit) {

@@ -29,7 +29,11 @@ class Puggle extends Sprite {
   var _allActors:Array<Actor>;
   var _actorsToRemove:Array<Actor>;
   var _pegsLitUp:Array<PegActor>;
+  var _goalPegs:Array<PegActor>;
+
   var _camera:Camera;
+
+  var _currentBall:BallActor;
 
   inline private static var LAUNCH_POINT:Point = new Point(323, 10);
   inline private static var LAUNCH_VELOCITY:Float = 390.0;
@@ -39,11 +43,13 @@ class Puggle extends Sprite {
 
     _camera = new Camera();
     addChild(_camera);
-    _camera.zoomTo(new Point(400,200));
 
     _allActors = [];
     _actorsToRemove = [];
     _pegsLitUp = [];
+    _goalPegs = [];
+
+    _currentBall = null;
 
     setupPhysicsWorld();
     createLevel();
@@ -60,8 +66,10 @@ class Puggle extends Sprite {
     var vertSpacing = 36;
     var pegBounds:Rectangle = new Rectangle(114, 226, 450, 320);
     var flipRow:Bool = false;
+    var allPegs:Array<PegActor> = [];
 
 
+    // Create all of our pegs
     for (pegY in new StepIter(pegBounds.top, pegBounds.bottom, vertSpacing)) {
       var startX = pegBounds.left + (flipRow ? 0 : horizSpacing/2);
       flipRow = !flipRow;
@@ -70,12 +78,16 @@ class Puggle extends Sprite {
             PegActor.NORMAL);
           newPeg.addEventListener(PegEvent.PEG_LIT_UP, handlePegLitUp);
           _allActors.push(newPeg);
+          allPegs.push(newPeg);
       }
     }
-    
 
-    // TODO: turn some pegs into goal pegs
-    // TODO: keep track of which these are
+    // turn some pegs into goal pegs
+    var randomPegNum = Math.floor(Math.random() * allPegs.length);
+    allPegs[randomPegNum].setType(PegActor.GOAL);
+
+    // keep track of which these are
+    _goalPegs.push(allPegs[randomPegNum]);
 
     // add the side walls
     var wallShapes:Array<Array<Point>> = [[new Point(0,0), new Point(10,0),
@@ -153,13 +165,16 @@ class Puggle extends Sprite {
   }
 
   private function launchBall(e:MouseEvent) {
-    var direction:Point = new Point(mouseX, mouseY).subtract(LAUNCH_POINT);
-    direction.normalize(LAUNCH_VELOCITY);
-    
-    var newBall = new BallActor(_camera, LAUNCH_POINT, direction);
-    newBall.addEventListener(BallEvent.BALL_OFF_SCREEN, handleBallOffScreen);
-    newBall.addEventListener(BallEvent.BALL_HIT_BONUS, handleBallInBonusChute);
-    _allActors.push(newBall);
+    if(_currentBall == null) {
+      var direction:Point = new Point(mouseX, mouseY).subtract(LAUNCH_POINT);
+      direction.normalize(LAUNCH_VELOCITY);
+
+      var newBall = new BallActor(_camera, LAUNCH_POINT, direction);
+      newBall.addEventListener(BallEvent.BALL_OFF_SCREEN, handleBallOffScreen);
+      newBall.addEventListener(BallEvent.BALL_HIT_BONUS, handleBallInBonusChute);
+      _allActors.push(newBall);
+      _currentBall = newBall;
+    }
   }
 
   private function handleBallInBonusChute(e:BallEvent) {
@@ -175,6 +190,8 @@ class Puggle extends Sprite {
     ballToRemove.removeEventListener(BallEvent.BALL_HIT_BONUS,
         handleBallInBonusChute);
     safeRemoveActor(ballToRemove);
+
+    _currentBall = null;
 
     // Remove the pegs that have been lit up at this point
     for(pegToRemove in _pegsLitUp) {
