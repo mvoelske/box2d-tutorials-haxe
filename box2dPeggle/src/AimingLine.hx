@@ -42,4 +42,9 @@ class AimingLine extends Sprite
 
   }
 
+
+  public function hide() {
+    graphics.clear();
+  }
+
 }

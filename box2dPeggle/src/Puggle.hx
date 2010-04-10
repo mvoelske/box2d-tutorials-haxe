@@ -62,18 +62,16 @@ class Puggle extends Sprite {
 
     _aimingLine = new AimingLine(9.8);
     _camera.addChild(_aimingLine);
-    _aimingLine.showLine(new Point(250,30), new Point(-3, 2),
-        LAUNCH_VELOCITY);
 
     setupPhysicsWorld();
     createLevel();
     addEventListener(Event.ENTER_FRAME, newFrameListener);
 
     Lib.current.stage.addEventListener(MouseEvent.CLICK, launchBall);
+    Lib.current.stage.addEventListener(MouseEvent.MOUSE_MOVE, showAimLine);
     
     Lib.current.addChild(this);
   }
-
 
   private function createLevel() {/*{{{*/
     var horizSpacing = 36;
@@ -187,6 +185,14 @@ class Puggle extends Sprite {
     return Math.round(dx*dx + dy*dy);
   }
 
+
+  private function showAimLine(e:MouseEvent) {
+    if(_currentBall == null) {
+      var direction:Point = new Point(mouseX, mouseY).subtract(LAUNCH_POINT);
+      _aimingLine.showLine(LAUNCH_POINT, direction, LAUNCH_VELOCITY);
+    }
+  }
+
   // actually remove marked actors
   private function reallyRemoveActors() {
     if(_actorsToRemove.length > 0)
@@ -217,6 +223,7 @@ class Puggle extends Sprite {
       newBall.addEventListener(BallEvent.BALL_HIT_BONUS, handleBallInBonusChute);
       _allActors.push(newBall);
       _currentBall = newBall;
+      _aimingLine.hide();
     }
   }
 
@@ -241,6 +248,8 @@ class Puggle extends Sprite {
       safeRemoveActor(pegToRemove);
     }
     _pegsLitUp = [];
+
+    showAimLine(null);
   }
 
   private function handlePegLitUp(e:PegEvent) {
