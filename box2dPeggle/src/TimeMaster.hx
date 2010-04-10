@@ -1,8 +1,10 @@
 package;
 
+import caurina.transitions.Tweener;
+
 class TimeMaster
 {
-  private var _frameRate:Int;
+  public var _frameRate:Int;
 
   public function new() {
     _frameRate = PhysiVals.FRAME_RATE;
@@ -13,11 +15,13 @@ class TimeMaster
   }
 
   public function slowDown() {
-    _frameRate = PhysiVals.FRAME_RATE * 5;
+    Tweener.addTween(this, {_frameRate:PhysiVals.FRAME_RATE*5,
+        time:0.5,transition:"linear"});
   }
 
   public function backToNormal() {
-    _frameRate = PhysiVals.FRAME_RATE;
+    Tweener.addTween(this, {_frameRate:PhysiVals.FRAME_RATE,
+        time:0.5,transition:"linear"});
   }
 
 }
