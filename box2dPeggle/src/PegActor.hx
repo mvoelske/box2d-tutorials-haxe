@@ -28,11 +28,13 @@ class PegActor extends Actor
 
   private var _beenHit:Bool;
   private var _pegType:Int;
+  private var _turnNormalWhenSafe:Bool;
 
 
   public function new(parent:DisplayObjectContainer, location:Point, type:Int) {
     _beenHit = false;
     _pegType = type;
+    _turnNormalWhenSafe = false;
     var pegMovie:MovieClip = new PegMovie();
     pegMovie.scaleX = PEG_DIAMETER / pegMovie.width;
     pegMovie.scaleY = PEG_DIAMETER / pegMovie.height;
@@ -67,7 +69,27 @@ class PegActor extends Actor
       _beenHit = true;
       dispatchEvent(new PegEvent(PegEvent.PEG_LIT_UP));
       setMyMovieFrame();
+      _turnNormalWhenSafe = true;
     }
+  }
+
+  override function childSpecificUpdating() {
+    if(_turnNormalWhenSafe) {
+      turnNormal();
+    }
+    super.childSpecificUpdating();
+  }
+
+  private function turnNormal() {
+    // Iterate through all shapes in our body
+    var shape = _body.GetShapeList();
+    while(shape != null) {
+      shape.m_density = 1.0;
+      shape = shape.GetNext();
+    }
+    _body.SetMassFromShapes();
+    _body.WakeUp();
+    //_body.SetLinearVelocity(new B2Vec2(0,-.5));
   }
 
 

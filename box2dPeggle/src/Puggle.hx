@@ -82,9 +82,9 @@ class Puggle extends Sprite {
   }
 
   private function createLevel() {/*{{{*/
-    var horizSpacing = 36;
-    var vertSpacing = 36;
-    var pegBounds:Rectangle = new Rectangle(114, 226, 450, 320);
+    var horizSpacing = 46;
+    var vertSpacing = 46;
+    var pegBounds:Rectangle = new Rectangle(114, 226, 480, 320);
     var flipRow:Bool = false;
     var allPegs:Array<PegActor> = [];
 
