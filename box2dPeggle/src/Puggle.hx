@@ -48,7 +48,7 @@ class Puggle extends Sprite {
   inline private static var GRAVITY:Float = 7.8;
 
 
-  public function new() {
+  public function new() {/*{{{*/
     super();
 
     _camera = new Camera();
@@ -79,7 +79,7 @@ class Puggle extends Sprite {
     Lib.current.stage.addEventListener(MouseEvent.MOUSE_MOVE, showAimLine);
     
     Lib.current.addChild(this);
-  }
+  }/*}}}*/
 
   private function createLevel() {/*{{{*/
     var horizSpacing = 46;
@@ -165,13 +165,13 @@ class Puggle extends Sprite {
     _allActors.push(bonusChute);
   }/*}}}*/
 
-  private function destroyPegNow(e:PegEvent) {
+  private function destroyPegNow(e:PegEvent) {/*{{{*/
     safeRemoveActor(e.currentTarget);
     e.currentTarget.removeEventListener(PegEvent.DONE_FADING_OUT,
         destroyPegNow);
-  }
+  }/*}}}*/
 
-  private function newFrameListener(e:Event) {
+  private function newFrameListener(e:Event) {/*{{{*/
     PhysiVals._world.Step(_timeMaster.getTimeStep(), 10);
 
     for (pa in _allActors) {
@@ -181,9 +181,9 @@ class Puggle extends Sprite {
     checkForZooming();
 
     reallyRemoveActors();
-  }
+  }/*}}}*/
 
-  private function checkForZooming() {
+  private function checkForZooming() {/*{{{*/
     if(_goalPegs.length == 1 && _currentBall != null) {
       var finalPeg = _goalPegs[0];
       var p1 = finalPeg.getSpriteLoc();
@@ -196,24 +196,28 @@ class Puggle extends Sprite {
     } else {
       _director.backToNormal();
     }
-  }
+  }/*}}}*/
 
-  private function getDistSquared(p1:Point, p2:Point) : Int {
-    var dx = (p2.x-p1.x); var dy = (p2.y - p1.y);
-    return Math.round(dx*dx + dy*dy);
-  }
-
-
-  private function showAimLine(e:MouseEvent) {
+  private function showAimLine(e:MouseEvent) {/*{{{*/
     if(_currentBall == null) {
+      if(!hasValidAimPos()) {
+        _aimingLine.hide();
+        return;
+      }
       var launchPoint = _shooter.getLaunchPosition();
       var direction:Point = new Point(mouseX, mouseY).subtract(launchPoint);
       _aimingLine.showLine(launchPoint, direction, LAUNCH_VELOCITY);
     }
+  }/*}}}*/
+
+  private function hasValidAimPos():Bool {
+    var bounds:Rectangle = _shooter.getBounds(this);
+    return !(mouseX > bounds.left && mouseX < bounds.right && mouseY <
+      bounds.bottom);
   }
 
   // actually remove marked actors
-  private function reallyRemoveActors() {
+  private function reallyRemoveActors() {/*{{{*/
     if(_actorsToRemove.length > 0)
     //trace("removing " + _actorsToRemove.length + " actors.");
     for(removeMe in _actorsToRemove) {
@@ -221,19 +225,19 @@ class Puggle extends Sprite {
       _allActors.remove(removeMe);
     }
     _actorsToRemove= [];
-  }
+  }/*}}}*/
 
   // mark actor to remove later, at a safe time
-  public function safeRemoveActor(actorToRemove:Actor) {
+  public function safeRemoveActor(actorToRemove:Actor) {/*{{{*/
 
     if(!Lambda.has(_actorsToRemove, actorToRemove)) {
       _actorsToRemove.push(actorToRemove);
     }
 
-  }
+  }/*}}}*/
 
-  private function launchBall(e:MouseEvent) {
-    if(_currentBall == null) {
+  private function launchBall(e:MouseEvent) {/*{{{*/
+    if(_currentBall == null && hasValidAimPos()) {
       var launchPoint = _shooter.getLaunchPosition();
 
       var direction:Point = new Point(mouseX, mouseY).subtract(launchPoint);
@@ -247,29 +251,28 @@ class Puggle extends Sprite {
       _currentBall = newBall;
       _aimingLine.hide();
     }
-  }
+  }/*}}}*/
 
-  private function handleBallInBonusChute(e:BallEvent) {
+  private function handleBallInBonusChute(e:BallEvent) {/*{{{*/
     trace("!B O N U S!");
     handleBallOffScreen(e);
-  }
+  }/*}}}*/
 
-
-  private function handlePegInBonusChute(e:PegEvent) {
+  private function handlePegInBonusChute(e:PegEvent) {/*{{{*/
     trace("peg bonus: " + cast(e.currentTarget, PegActor)._pegType);
     handlePegOffScreen(e);
-  }
+  }/*}}}*/
 
-  private function handlePegOffScreen(e:PegEvent) {
+  private function handlePegOffScreen(e:PegEvent) {/*{{{*/
     var pegToRemove = cast(e.currentTarget, PegActor);
     pegToRemove.removeEventListener(PegEvent.PEG_OFF_SCREEN,
         handlePegOffScreen);
     pegToRemove.removeEventListener(PegEvent.PEG_HIT_BONUS,
         handlePegInBonusChute);
     safeRemoveActor(pegToRemove);
-  }
+  }/*}}}*/
 
-  private function handleBallOffScreen(e:BallEvent) {
+  private function handleBallOffScreen(e:BallEvent) {/*{{{*/
     //trace("Ball is off screen");
     var ballToRemove = cast(e.currentTarget, BallActor);
     ballToRemove.removeEventListener(BallEvent.BALL_OFF_SCREEN,
@@ -288,9 +291,9 @@ class Puggle extends Sprite {
     _pegsLitUp = [];
 
     showAimLine(null);
-  }
+  }/*}}}*/
 
-  private function handlePegLitUp(e:PegEvent) {
+  private function handlePegLitUp(e:PegEvent) {/*{{{*/
     // record the fact that the peg has been lit, remove later
     var pegActor:PegActor = cast(e.currentTarget, PegActor);
     pegActor.removeEventListener(PegEvent.PEG_LIT_UP, handlePegLitUp);
@@ -301,9 +304,9 @@ class Puggle extends Sprite {
       }
     }
     
-  }
+  }/*}}}*/
 
-  private function setupPhysicsWorld() {
+  private function setupPhysicsWorld() {/*{{{*/
     var worldBounds:B2AABB = new B2AABB();
     worldBounds.lowerBound.Set(-5000 / PhysiVals.RATIO,
         -5000 / PhysiVals.RATIO);
@@ -315,11 +318,15 @@ class Puggle extends Sprite {
 
     PhysiVals._world = new B2World(worldBounds, gravity, allowSleep);
     PhysiVals._world.SetContactListener(new PuggleContactListener());
-  }
-
+  }/*}}}*/
 
   public static function main() {
     new Puggle();
+  }
+
+  private static function getDistSquared(p1:Point, p2:Point) : Int {
+    var dx = (p2.x-p1.x); var dy = (p2.y - p1.y);
+    return Math.round(dx*dx + dy*dy);
   }
 
 }

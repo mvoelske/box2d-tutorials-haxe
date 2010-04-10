@@ -6,6 +6,8 @@ import flash.geom.Point;
 import flash.events.Event;
 import flash.Lib;
 
+import AssetClasses;
+
 class Shooter extends Sprite
 {
 
@@ -14,7 +16,12 @@ class Shooter extends Sprite
   public function new() {
     super();
     addEventListener(Event.ENTER_FRAME, alignToMouse);
-    addChild(new ShooterSprite());
+    var bmp = new BMP_Shooter();
+
+    bmp.x = -45;
+    bmp.y = -45;
+
+    addChild(bmp);
   }
 
   public function getLaunchPosition():Point {
