@@ -56,6 +56,7 @@ class Puggle extends Sprite {
     var pegBounds:Rectangle = new Rectangle(114, 226, 450, 320);
     var flipRow:Bool = false;
 
+    /*
     for (pegY in new StepIter(pegBounds.top, pegBounds.bottom, vertSpacing)) {
       var startX = pegBounds.left + (flipRow ? 0 : horizSpacing/2);
       flipRow = !flipRow;
@@ -66,6 +67,7 @@ class Puggle extends Sprite {
           _allActors.push(newPeg);
       }
     }
+    */
 
     // TODO: turn some pegs into goal pegs
     // TODO: keep track of which these are
@@ -116,7 +118,7 @@ class Puggle extends Sprite {
   }/*}}}*/
 
   private function newFrameListener(e:Event) {
-    PhysiVals._world.Step(1 / 30.0, 10);
+    PhysiVals._world.Step(1 / PhysiVals.FRAME_RATE, 10);
 
     for (pa in _allActors) {
       pa.updateNow();

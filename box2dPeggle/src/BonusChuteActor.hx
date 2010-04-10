@@ -13,6 +13,7 @@ class BonusChuteActor extends Actor
 {
 
   inline public static var BONUS_TARGET:String = "BonusTarget";
+  inline static var TRAVEL_SPEED = 2;
   private var _bounds:Array<Int>;
   private var _yPos:Int;
   private var _direction:Int;
@@ -92,9 +93,24 @@ class BonusChuteActor extends Actor
     } else if(_costume.x < _bounds[0]) {
       _direction = 1;
     }
-    var newLocation:Point = new Point(_costume.x + (_direction*2), _yPos);
-    _body.SetXForm(new B2Vec2(newLocation.x / PhysiVals.RATIO, 
-                              newLocation.y / PhysiVals.RATIO), 0);
+
+    //_body.setLinearVelocity(new B2Vec2(2 * _direction, 0));
+
+    var idealLocation:B2Vec2 = new B2Vec2(_costume.x +
+        (_direction*TRAVEL_SPEED), _yPos);
+    var directionToTravel = new B2Vec2(idealLocation.x - _costume.x,
+        idealLocation.y - _costume.y);
+    trace("travel " + directionToTravel.x + ", " + directionToTravel.x);
+
+
+    //distance in meters
+    directionToTravel.Multiply(1 / PhysiVals.RATIO);
+
+    // multiply by frame rate to get m/s
+    directionToTravel.Multiply(PhysiVals.FRAME_RATE);
+
+    _body.SetLinearVelocity(directionToTravel);
+    _body.SetAngularVelocity(0);
 
     super.childSpecificUpdating();
   }
