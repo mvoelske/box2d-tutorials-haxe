@@ -5,6 +5,7 @@ import flash.display.Sprite;
 import flash.events.Event;
 import flash.geom.Point;
 
+import caurina.transitions.Tweener;
 
 class Camera extends Sprite 
 {
@@ -18,18 +19,17 @@ class Camera extends Sprite
 
 
   public function zoomTo(whatPoint:Point) {
-    this.scaleX = ZOOM_IN_AMT;
-    this.scaleY = ZOOM_IN_AMT;
+    var newx = (Lib.current.stage.stageWidth  / 2) - (whatPoint.x * ZOOM_IN_AMT);
+    var newy = (Lib.current.stage.stageHeight / 2) - (whatPoint.y * ZOOM_IN_AMT);
 
-    this.x = (Lib.current.stage.stageWidth  / 2) - (whatPoint.x * ZOOM_IN_AMT);
-    this.y = (Lib.current.stage.stageHeight / 2) - (whatPoint.y * ZOOM_IN_AMT);
+    Tweener.addTween(this, {x:newx, y:newy, scaleX:ZOOM_IN_AMT,
+        scaleY:ZOOM_IN_AMT, transition:"linear", time:1.0});
+
   }
 
   public function zoomOut() {
-    this.scaleX = 1;
-    this.scaleY = 1;
-    this.x = 0;
-    this.y = 0;
+    Tweener.addTween(this, {x:0, y:0, scaleX:1, scaleY:1, transition:"linear",
+        time:1.0});
   }
 
 }

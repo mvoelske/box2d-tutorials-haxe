@@ -44,7 +44,7 @@ class Puggle extends Sprite {
 
   inline private static var SHOOTER_POINT:Point = new Point(323, 10);
   inline private static var LAUNCH_VELOCITY:Float = 470.0;
-  inline private static var GOAL_PEG_NUM:Int = 22;
+  inline private static var GOAL_PEG_NUM:Int = 1;//22;
   inline private static var GRAVITY:Float = 7.8;
 
 

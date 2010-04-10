@@ -5,3 +5,4 @@
 -cp src
 -debug
 -lib box2d
+-lib TweenerHX
