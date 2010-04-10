@@ -34,6 +34,7 @@ class Puggle extends Sprite {
   var _camera:Camera;
 
   var _currentBall:BallActor;
+  var _timeMaster:TimeMaster;
 
   inline private static var LAUNCH_POINT:Point = new Point(323, 10);
   inline private static var LAUNCH_VELOCITY:Float = 390.0;
@@ -49,6 +50,7 @@ class Puggle extends Sprite {
     _pegsLitUp = [];
     _goalPegs = [];
 
+    _timeMaster = new TimeMaster();
     _currentBall = null;
 
     setupPhysicsWorld();
@@ -136,7 +138,7 @@ class Puggle extends Sprite {
   }/*}}}*/
 
   private function newFrameListener(e:Event) {
-    PhysiVals._world.Step(1 / PhysiVals.FRAME_RATE, 10);
+    PhysiVals._world.Step(_timeMaster.getTimeStep(), 10);
 
     for (pa in _allActors) {
       pa.updateNow();
@@ -156,11 +158,14 @@ class Puggle extends Sprite {
       // TODO: fix flickering
       if(getDistSquared(p1,p2) < 75*75) {
         _camera.zoomTo(p1);
+        _timeMaster.slowDown();
       } else {
         _camera.zoomOut();
+        _timeMaster.backToNormal();
       }
     } else if(_goalPegs.length == 0) {
       _camera.zoomOut();
+      _timeMaster.backToNormal();
     }
   }
 
