@@ -29,12 +29,16 @@ class Puggle extends Sprite {
   var _allActors:Array<Actor>;
   var _actorsToRemove:Array<Actor>;
   var _pegsLitUp:Array<PegActor>;
+  var _camera:Camera;
 
   inline private static var LAUNCH_POINT:Point = new Point(323, 10);
   inline private static var LAUNCH_VELOCITY:Float = 390.0;
 
   public function new() {
     super();
+
+    _camera = new Camera();
+    addChild(_camera);
 
     _allActors = [];
     _actorsToRemove = [];
@@ -61,7 +65,7 @@ class Puggle extends Sprite {
       var startX = pegBounds.left + (flipRow ? 0 : horizSpacing/2);
       flipRow = !flipRow;
       for (pegX in new StepIter(startX, pegBounds.right, horizSpacing)) {
-          var newPeg:PegActor = new PegActor(this, new Point(pegX, pegY),
+          var newPeg:PegActor = new PegActor(_camera, new Point(pegX, pegY),
             PegActor.NORMAL);
           newPeg.addEventListener(PegEvent.PEG_LIT_UP, handlePegLitUp);
           _allActors.push(newPeg);
@@ -75,45 +79,45 @@ class Puggle extends Sprite {
     // add the side walls
     var wallShapes:Array<Array<Point>> = [[new Point(0,0), new Point(10,0),
         new Point(10,603), new Point(0,603)]];
-    var leftWall:ArbiStaticActor = new ArbiStaticActor(this, new Point(-9,0),
+    var leftWall:ArbiStaticActor = new ArbiStaticActor(_camera, new Point(-9,0),
         wallShapes);
     _allActors.push(leftWall);
 
-    var rightWall:ArbiStaticActor = new ArbiStaticActor(this, new Point(645,
+    var rightWall:ArbiStaticActor = new ArbiStaticActor(_camera, new Point(645,
           0), wallShapes);
     _allActors.push(rightWall);
 
     var leftRampCoords = [[new Point(0,0), new Point(79,27), new Point(79,30),
         new Point(0,3)]];
-    var leftRamp1 = new ArbiStaticActor(this, new Point(0, 265),
+    var leftRamp1 = new ArbiStaticActor(_camera, new Point(0, 265),
         leftRampCoords);
     _allActors.push(leftRamp1);
 
-    var leftRamp2 = new ArbiStaticActor(this, new Point(0, 336),
+    var leftRamp2 = new ArbiStaticActor(_camera, new Point(0, 336),
         leftRampCoords);
     _allActors.push(leftRamp2);
 
-    var leftRamp3 = new ArbiStaticActor(this, new Point(0, 415),
+    var leftRamp3 = new ArbiStaticActor(_camera, new Point(0, 415),
         leftRampCoords);
     _allActors.push(leftRamp3);
 
     var rightRampCoords = [[new Point(0,0), new Point(0,3), new Point(-85,32),
         new Point(-85, 29)]];
 
-    var righRamp1 = new ArbiStaticActor(this, new Point(646, 232),
+    var righRamp1 = new ArbiStaticActor(_camera, new Point(646, 232),
         rightRampCoords);
     _allActors.push(righRamp1);
 
-    var rightRamp2 = new ArbiStaticActor(this, new Point(646, 308),
+    var rightRamp2 = new ArbiStaticActor(_camera, new Point(646, 308),
         rightRampCoords);
     _allActors.push(rightRamp2);
 
-    var rightRamp3 = new ArbiStaticActor(this, new Point(646, 388),
+    var rightRamp3 = new ArbiStaticActor(_camera, new Point(646, 388),
         rightRampCoords);
     _allActors.push(rightRamp3);
 
 
-    var bonusChute:BonusChuteActor = new BonusChuteActor(this, 200, 450, 580);
+    var bonusChute:BonusChuteActor = new BonusChuteActor(_camera, 200, 450, 580);
     _allActors.push(bonusChute);
   }/*}}}*/
 
@@ -151,7 +155,7 @@ class Puggle extends Sprite {
     var direction:Point = new Point(mouseX, mouseY).subtract(LAUNCH_POINT);
     direction.normalize(LAUNCH_VELOCITY);
     
-    var newBall = new BallActor(this, LAUNCH_POINT, direction);
+    var newBall = new BallActor(_camera, LAUNCH_POINT, direction);
     newBall.addEventListener(BallEvent.BALL_OFF_SCREEN, handleBallOffScreen);
     newBall.addEventListener(BallEvent.BALL_HIT_BONUS, handleBallInBonusChute);
     _allActors.push(newBall);
