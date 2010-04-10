@@ -31,10 +31,13 @@ class Puggle extends Sprite {
   var _pegsLitUp:Array<PegActor>;
   var _goalPegs:Array<PegActor>;
 
+
+  var _director:Director;
   var _camera:Camera;
+  var _timeMaster:TimeMaster;
+
 
   var _currentBall:BallActor;
-  var _timeMaster:TimeMaster;
 
   inline private static var LAUNCH_POINT:Point = new Point(323, 10);
   inline private static var LAUNCH_VELOCITY:Float = 390.0;
@@ -52,6 +55,8 @@ class Puggle extends Sprite {
 
     _timeMaster = new TimeMaster();
     _currentBall = null;
+
+    _director= new Director(_camera, _timeMaster);
 
     setupPhysicsWorld();
     createLevel();
@@ -154,18 +159,13 @@ class Puggle extends Sprite {
       var finalPeg = _goalPegs[0];
       var p1 = finalPeg.getSpriteLoc();
       var p2 = _currentBall.getSpriteLoc();
-      // TODO: don't call zoomIn every frame
-      // TODO: fix flickering
       if(getDistSquared(p1,p2) < 75*75) {
-        _camera.zoomTo(p1);
-        _timeMaster.slowDown();
+        _director.zoomIn(p1);
       } else {
-        _camera.zoomOut();
-        _timeMaster.backToNormal();
+        _director.backToNormal();
       }
     } else if(_goalPegs.length == 0) {
-      _camera.zoomOut();
-      _timeMaster.backToNormal();
+      _director.backToNormal();
     }
   }
 
