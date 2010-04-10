@@ -20,20 +20,21 @@ class PuggleContactListener extends B2ContactListener {
         Std.is(point.shape2.GetBody().GetUserData(), BallActor))) {
 
       if(Std.is(point.shape1.GetBody().GetUserData(), PegActor)) {
-        cast(point.shape1.GetBody().GetUserData(),PegActor).hitByBall();
-        cast(point.shape1.GetBody().GetUserData(),PegActor).setCollisionInfo(
-            point.shape2.GetBody().GetLinearVelocity(),
-            point.shape2.GetBody().GetMass(),
-            new B2Vec2(point.normal.x*-1, point.normal.y*-1)
-            );
+        if(point.shape1.GetBody().IsStatic()) {
+          cast(point.shape1.GetBody().GetUserData(),PegActor).hitByBall();
+          cast(point.shape1.GetBody().GetUserData(),PegActor).setCollisionInfo(
+              point.shape2.GetBody().GetLinearVelocity(),
+              point.shape2.GetBody().GetMass(),
+              new B2Vec2(point.normal.x*-1, point.normal.y*-1) );
+        }
       } else if(Std.is(point.shape2.GetBody().GetUserData(), PegActor)) {
-        cast(point.shape2.GetBody().GetUserData(),PegActor).hitByBall();
-        cast(point.shape2.GetBody().GetUserData(),PegActor).setCollisionInfo(
-            point.shape1.GetBody().GetLinearVelocity(),
-            point.shape1.GetBody().GetMass(),
-            point.normal
-            );
-
+        if(point.shape2.GetBody().IsStatic()) {
+          cast(point.shape2.GetBody().GetUserData(),PegActor).hitByBall();
+          cast(point.shape2.GetBody().GetUserData(),PegActor).setCollisionInfo(
+              point.shape1.GetBody().GetLinearVelocity(),
+              point.shape1.GetBody().GetMass(),
+              point.normal );
+        }
       } else if(Std.is(point.shape1.GetUserData(), String) &&
           cast(point.shape1.GetUserData(),String) ==
           BonusChuteActor.BONUS_TARGET) {
@@ -43,7 +44,7 @@ class PuggleContactListener extends B2ContactListener {
           BonusChuteActor.BONUS_TARGET) {
         cast(point.shape1.GetBody().GetUserData(), BallActor).hitBonusTarget();
       }
-    } 
+    }
     super.Add(point);
   }
 
