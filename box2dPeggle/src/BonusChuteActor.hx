@@ -89,19 +89,13 @@ class BonusChuteActor extends Actor
 
   override function childSpecificUpdating() {
 
-    if(_costume.x > _bounds[1]) {
-      _direction = -1;
-    } else if(_costume.x < _bounds[0]) {
-      _direction = 1;
-    }
+    var idealLocation = new B2Vec2(_costume.x + _costume.mouseX, _yPos);
 
-    //_body.setLinearVelocity(new B2Vec2(2 * _direction, 0));
+    if(idealLocation.x < _bounds[0]) idealLocation.x = _bounds[0];
+    else if(idealLocation.x > _bounds[1]) idealLocation.x = _bounds[1];
 
-    var idealLocation:B2Vec2 = new B2Vec2(_costume.x +
-        (_direction*TRAVEL_SPEED), _yPos);
     var directionToTravel = new B2Vec2(idealLocation.x - _costume.x,
         idealLocation.y - _costume.y);
-
 
     //distance in meters
     directionToTravel.Multiply(1 / PhysiVals.RATIO);

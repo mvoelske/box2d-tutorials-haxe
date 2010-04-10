@@ -158,7 +158,8 @@ class Puggle extends Sprite {
     _allActors.push(rightRamp3);
 
 
-    var bonusChute:BonusChuteActor = new BonusChuteActor(_camera, 200, 450, 580);
+    var bonusChute:BonusChuteActor = new BonusChuteActor(_camera, 100,
+        Lib.current.stage.stageWidth - 100, 580);
     _allActors.push(bonusChute);
   }/*}}}*/
 
