@@ -36,7 +36,7 @@ class BallActor extends Actor
     var ballBodyDef:B2BodyDef = new B2BodyDef();
     ballBodyDef.position.Set(location.x / PhysiVals.RATIO, location.y /
         PhysiVals.RATIO);
-    // TODO: one more thing...
+    ballBodyDef.isBullet = true;
 
     // create body
     var ballBody:B2Body = PhysiVals._world.CreateBody(ballBodyDef); 

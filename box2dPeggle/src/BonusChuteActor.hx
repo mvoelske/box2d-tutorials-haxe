@@ -74,6 +74,7 @@ class BonusChuteActor extends Actor
 
     chuteBodyDef.position.Set(((leftBounds + rightBounds) / 2) /
         PhysiVals.RATIO, yPos / PhysiVals.RATIO);
+    chuteBodyDef.fixedRotation = true;
 
     var chuteBody = PhysiVals._world.CreateBody(chuteBodyDef);
 
@@ -100,7 +101,6 @@ class BonusChuteActor extends Actor
         (_direction*TRAVEL_SPEED), _yPos);
     var directionToTravel = new B2Vec2(idealLocation.x - _costume.x,
         idealLocation.y - _costume.y);
-    trace("travel " + directionToTravel.x + ", " + directionToTravel.x);
 
 
     //distance in meters
@@ -110,7 +110,6 @@ class BonusChuteActor extends Actor
     directionToTravel.Multiply(PhysiVals.FRAME_RATE);
 
     _body.SetLinearVelocity(directionToTravel);
-    _body.SetAngularVelocity(0);
 
     super.childSpecificUpdating();
   }
