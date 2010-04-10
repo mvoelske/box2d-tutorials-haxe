@@ -44,7 +44,7 @@ class Puggle extends Sprite {
 
   inline private static var SHOOTER_POINT:Point = new Point(323, 10);
   inline private static var LAUNCH_VELOCITY:Float = 470.0;
-  inline private static var GOAL_PEG_NUM:Int = 1;//22;
+  inline private static var GOAL_PEG_NUM:Int = 22;
   inline private static var GRAVITY:Float = 7.8;
 
 
@@ -97,6 +97,7 @@ class Puggle extends Sprite {
           var newPeg:PegActor = new PegActor(_camera, new Point(pegX, pegY),
             PegActor.NORMAL);
           newPeg.addEventListener(PegEvent.PEG_LIT_UP, handlePegLitUp);
+          newPeg.addEventListener(PegEvent.DONE_FADING_OUT, destroyPegNow);
           _allActors.push(newPeg);
           allPegs.push(newPeg);
       }
@@ -160,6 +161,12 @@ class Puggle extends Sprite {
     var bonusChute:BonusChuteActor = new BonusChuteActor(_camera, 200, 450, 580);
     _allActors.push(bonusChute);
   }/*}}}*/
+
+  private function destroyPegNow(e:PegEvent) {
+    safeRemoveActor(e.currentTarget);
+    e.currentTarget.removeEventListener(PegEvent.DONE_FADING_OUT,
+        destroyPegNow);
+  }
 
   private function newFrameListener(e:Event) {
     PhysiVals._world.Step(_timeMaster.getTimeStep(), 10);
@@ -256,8 +263,9 @@ class Puggle extends Sprite {
     _currentBall = null;
 
     // Remove the pegs that have been lit up at this point
-    for(pegToRemove in _pegsLitUp) {
-      safeRemoveActor(pegToRemove);
+    for(i in 0..._pegsLitUp.length) {
+      var pegToRemove = _pegsLitUp[i];
+      pegToRemove.fadeOut(i);
     }
     _pegsLitUp = [];
 

@@ -16,6 +16,8 @@ import box2D.common.math.B2Vec2;
 import AssetClasses;
 import PegEvent;
 
+import caurina.transitions.Tweener;
+
 class PegActor extends Actor
 {
 
@@ -68,6 +70,18 @@ class PegActor extends Actor
     }
   }
 
+
+  public function fadeOut(pegNumber:Int) {
+    Tweener.addTween(_costume,
+        {time:0.3, alpha:0, delay:0.08 * pegNumber,
+         onComplete:sendFadeOutDone}
+    );
+  }
+
+  private function sendFadeOutDone() {
+    dispatchEvent(new PegEvent(PegEvent.DONE_FADING_OUT));
+  }
+  
   public function setType(newType:Int) {
     _pegType = newType;
     setMyMovieFrame();
