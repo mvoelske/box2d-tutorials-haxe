@@ -14,7 +14,7 @@ import box2D.dynamics.B2BodyDef;
 import box2D.collision.shapes.B2CircleDef;
 import box2D.common.math.B2Vec2;
 
-class BallActor extends Actor 
+class BallActor extends HitBonusActor 
 {
   inline static private var BALL_DIAMETER:Int = 12;
 
@@ -53,7 +53,7 @@ class BallActor extends Actor
     super(ballBody,ballSprite);
   }
 
-  public function hitBonusTarget() {
+  override function hitBonusTarget() {
     dispatchEvent(new BallEvent(BallEvent.BALL_HIT_BONUS));
   }
   

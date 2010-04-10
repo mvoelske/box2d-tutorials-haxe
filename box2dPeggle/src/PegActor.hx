@@ -18,7 +18,7 @@ import PegEvent;
 
 import caurina.transitions.Tweener;
 
-class PegActor extends Actor
+class PegActor extends HitBonusActor
 {
 
   inline public static var NORMAL:Int = 1;
@@ -27,7 +27,7 @@ class PegActor extends Actor
   inline private static var PEG_DIAMETER:Int = 19;
 
   private var _beenHit:Bool;
-  private var _pegType:Int;
+  public var _pegType(default,null):Int;
   private var _turnNormalWhenSafe:Bool;
   private var _turnedNormal:Bool;
 
@@ -76,10 +76,17 @@ class PegActor extends Actor
     }
   }
 
+  override function hitBonusTarget() {
+    dispatchEvent(new PegEvent(PegEvent.PEG_HIT_BONUS));
+  }
+
   override function childSpecificUpdating() {
     if(_turnNormalWhenSafe && !_turnedNormal) {
       turnNormal();
       _turnedNormal = true;
+    }
+    if (_costume.y > _costume.stage.stageHeight) {
+      dispatchEvent(new PegEvent(PegEvent.PEG_OFF_SCREEN));
     }
     super.childSpecificUpdating();
   }

@@ -98,6 +98,8 @@ class Puggle extends Sprite {
             PegActor.NORMAL);
           newPeg.addEventListener(PegEvent.PEG_LIT_UP, handlePegLitUp);
           newPeg.addEventListener(PegEvent.DONE_FADING_OUT, destroyPegNow);
+          newPeg.addEventListener(PegEvent.PEG_OFF_SCREEN, handlePegOffScreen);
+          newPeg.addEventListener(PegEvent.PEG_HIT_BONUS, handlePegInBonusChute);
           _allActors.push(newPeg);
           allPegs.push(newPeg);
       }
@@ -252,6 +254,21 @@ class Puggle extends Sprite {
     handleBallOffScreen(e);
   }
 
+
+  private function handlePegInBonusChute(e:PegEvent) {
+    trace("peg bonus: " + cast(e.currentTarget, PegActor)._pegType);
+    handlePegOffScreen(e);
+  }
+
+  private function handlePegOffScreen(e:PegEvent) {
+    var pegToRemove = cast(e.currentTarget, PegActor);
+    pegToRemove.removeEventListener(PegEvent.PEG_OFF_SCREEN,
+        handlePegOffScreen);
+    pegToRemove.removeEventListener(PegEvent.PEG_HIT_BONUS,
+        handlePegInBonusChute);
+    safeRemoveActor(pegToRemove);
+  }
+
   private function handleBallOffScreen(e:BallEvent) {
     //trace("Ball is off screen");
     var ballToRemove = cast(e.currentTarget, BallActor);
@@ -266,7 +283,7 @@ class Puggle extends Sprite {
     // Remove the pegs that have been lit up at this point
     for(i in 0..._pegsLitUp.length) {
       var pegToRemove = _pegsLitUp[i];
-      pegToRemove.fadeOut(i);
+      //pegToRemove.fadeOut(i);
     }
     _pegsLitUp = [];
 

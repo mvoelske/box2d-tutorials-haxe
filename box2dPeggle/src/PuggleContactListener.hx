@@ -17,7 +17,7 @@ class PuggleContactListener extends B2ContactListener {
     //trace("BAM!");
 
     if((Std.is(point.shape1.GetBody().GetUserData(), BallActor) ||
-        Std.is(point.shape2.GetBody().GetUserData(), BallActor))) {
+          Std.is(point.shape2.GetBody().GetUserData(), BallActor))) {
 
       if(Std.is(point.shape1.GetBody().GetUserData(), PegActor)) {
         if(point.shape1.GetBody().IsStatic()) {
@@ -35,16 +35,24 @@ class PuggleContactListener extends B2ContactListener {
               point.shape1.GetBody().GetMass(),
               point.normal );
         }
-      } else if(Std.is(point.shape1.GetUserData(), String) &&
+      }
+
+
+    } 
+
+    if(Std.is(point.shape1.GetBody().GetUserData(), HitBonusActor) ||
+        Std.is(point.shape2.GetBody().GetUserData(), HitBonusActor)) {
+      if(Std.is(point.shape1.GetUserData(), String) &&
           cast(point.shape1.GetUserData(),String) ==
           BonusChuteActor.BONUS_TARGET) {
-        cast(point.shape2.GetBody().GetUserData(), BallActor).hitBonusTarget();
+        cast(point.shape2.GetBody().GetUserData(), HitBonusActor).hitBonusTarget();
       } else if (Std.is(point.shape2.GetUserData(), String) &&
           cast(point.shape2.GetUserData(),String) ==
           BonusChuteActor.BONUS_TARGET) {
-        cast(point.shape1.GetBody().GetUserData(), BallActor).hitBonusTarget();
+        cast(point.shape1.GetBody().GetUserData(), HitBonusActor).hitBonusTarget();
       }
     }
+
     super.Add(point);
   }
 

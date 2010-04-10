@@ -57,7 +57,6 @@ class BonusChuteActor extends Actor
     rightRampShapeDef.density = 1;
 
 
-    // TODO: sensor fails to fire sometimes. turn on debugdraw and look at this
     var centerHoleShapeDef = new B2PolygonDef();
     centerHoleShapeDef.vertexCount = 4;
     centerHoleShapeDef.vertices[0].Set( -64.5 / PhysiVals.RATIO, 0 / PhysiVals.RATIO);
