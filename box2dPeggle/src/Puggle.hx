@@ -41,6 +41,7 @@ class Puggle extends Sprite {
 
   inline private static var LAUNCH_POINT:Point = new Point(323, 10);
   inline private static var LAUNCH_VELOCITY:Float = 390.0;
+  inline private static var GOAL_PEG_NUM:Int = 22;
 
   public function new() {
     super();
@@ -90,12 +91,18 @@ class Puggle extends Sprite {
     }
 
     // turn some pegs into goal pegs
-    // TODO: more than one goal peg
-    var randomPegNum = Math.floor(Math.random() * allPegs.length);
-    allPegs[randomPegNum].setType(PegActor.GOAL);
+    if(allPegs.length < GOAL_PEG_NUM) {
+      throw "Dude. I need more pegs!";
+    } else {
+      for(i in 0...GOAL_PEG_NUM) {
+        var randomPegNum = Math.floor(Math.random() * allPegs.length);
+        allPegs[randomPegNum].setType(PegActor.GOAL);
 
-    // keep track of which these are
-    _goalPegs.push(allPegs[randomPegNum]);
+        // keep track of which these are
+        _goalPegs.push(allPegs[randomPegNum]);
+        allPegs.splice(randomPegNum, 1);
+      }
+    }
 
     // add the side walls
     var wallShapes:Array<Array<Point>> = [[new Point(0,0), new Point(10,0),
@@ -164,7 +171,7 @@ class Puggle extends Sprite {
       } else {
         _director.backToNormal();
       }
-    } else if(_goalPegs.length == 0) {
+    } else {
       _director.backToNormal();
     }
   }
