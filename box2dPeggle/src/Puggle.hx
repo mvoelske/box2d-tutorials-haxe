@@ -41,8 +41,10 @@ class Puggle extends Sprite {
   var _currentBall:BallActor;
 
   inline private static var LAUNCH_POINT:Point = new Point(323, 10);
-  inline private static var LAUNCH_VELOCITY:Float = 390.0;
+  inline private static var LAUNCH_VELOCITY:Float = 470.0;
   inline private static var GOAL_PEG_NUM:Int = 22;
+  inline private static var GRAVITY:Float = 7.8;
+
 
   public function new() {
     super();
@@ -60,7 +62,7 @@ class Puggle extends Sprite {
 
     _director= new Director(_camera, _timeMaster);
 
-    _aimingLine = new AimingLine(9.8);
+    _aimingLine = new AimingLine(GRAVITY);
     _camera.addChild(_aimingLine);
 
     setupPhysicsWorld();
@@ -272,7 +274,7 @@ class Puggle extends Sprite {
     worldBounds.upperBound.Set(5000 / PhysiVals.RATIO,
         5000 / PhysiVals.RATIO);
 
-    var gravity:B2Vec2 = new B2Vec2(0,9.8);
+    var gravity:B2Vec2 = new B2Vec2(0,GRAVITY);
     var allowSleep:Bool = true;
 
     PhysiVals._world = new B2World(worldBounds, gravity, allowSleep);

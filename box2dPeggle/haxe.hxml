@@ -1,5 +1,5 @@
 -swf-version 9
--swf-header 646:603:30:ffffff
+-swf-header 646:603:60:ffffff
 -swf-lib res/library.swf
 -cp gen
 -cp src
