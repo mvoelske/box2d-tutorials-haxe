@@ -39,6 +39,7 @@ class Puggle extends Sprite {
 
     _camera = new Camera();
     addChild(_camera);
+    _camera.zoomTo(new Point(400,200));
 
     _allActors = [];
     _actorsToRemove = [];
