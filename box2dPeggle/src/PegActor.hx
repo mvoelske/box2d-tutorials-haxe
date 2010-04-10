@@ -84,9 +84,21 @@ class PegActor extends Actor
     super.childSpecificUpdating();
   }
 
-  public function setCollisionInfo(ballVel:B2Vec2, ballMass:Float) {
-    _ballForceToApply = ballVel.Copy();
+  public function setCollisionInfo(ballVel:B2Vec2, ballMass:Float,
+      collisionNormal:B2Vec2) {
+    _ballForceToApply = collisionNormal.Copy();
+    _ballForceToApply.Multiply(ballVel.Length());
     _ballForceToApply.Multiply(ballMass);
+
+    var dotProduct:Float = (ballVel.x * collisionNormal.x) + (ballVel.y *
+        collisionNormal.y);
+
+    dotProduct /= ballVel.Length();
+    dotProduct /= collisionNormal.Length();
+
+    // scale the force with cos(theta), where
+    // cos(theta) = (v1 * v2) / (|v1|*|v2|)
+    _ballForceToApply.Multiply(dotProduct);
   }
 
   private function turnNormal() {

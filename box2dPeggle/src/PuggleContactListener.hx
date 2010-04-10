@@ -2,6 +2,7 @@ package;
 
 import box2D.dynamics.B2ContactListener;
 import box2D.collision.B2ContactPoint;
+import box2D.common.math.B2Vec2;
 
 import BallActor;
 import PegActor;
@@ -22,13 +23,15 @@ class PuggleContactListener extends B2ContactListener {
         cast(point.shape1.GetBody().GetUserData(),PegActor).hitByBall();
         cast(point.shape1.GetBody().GetUserData(),PegActor).setCollisionInfo(
             point.shape2.GetBody().GetLinearVelocity(),
-            point.shape2.GetBody().GetMass()
+            point.shape2.GetBody().GetMass(),
+            new B2Vec2(point.normal.x*-1, point.normal.y*-1)
             );
       } else if(Std.is(point.shape2.GetBody().GetUserData(), PegActor)) {
         cast(point.shape2.GetBody().GetUserData(),PegActor).hitByBall();
         cast(point.shape2.GetBody().GetUserData(),PegActor).setCollisionInfo(
             point.shape1.GetBody().GetLinearVelocity(),
-            point.shape1.GetBody().GetMass()
+            point.shape1.GetBody().GetMass(),
+            point.normal
             );
 
       } else if(Std.is(point.shape1.GetUserData(), String) &&
