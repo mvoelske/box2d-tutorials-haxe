@@ -29,12 +29,15 @@ class PegActor extends Actor
   private var _beenHit:Bool;
   private var _pegType:Int;
   private var _turnNormalWhenSafe:Bool;
+  private var _turnedNormal:Bool;
 
+  private var _ballVel:B2Vec2;
 
   public function new(parent:DisplayObjectContainer, location:Point, type:Int) {
     _beenHit = false;
     _pegType = type;
     _turnNormalWhenSafe = false;
+    _turnedNormal = false;
     var pegMovie:MovieClip = new PegMovie();
     pegMovie.scaleX = PEG_DIAMETER / pegMovie.width;
     pegMovie.scaleY = PEG_DIAMETER / pegMovie.height;
@@ -74,10 +77,15 @@ class PegActor extends Actor
   }
 
   override function childSpecificUpdating() {
-    if(_turnNormalWhenSafe) {
+    if(_turnNormalWhenSafe && !_turnedNormal) {
       turnNormal();
+      _turnedNormal = true;
     }
     super.childSpecificUpdating();
+  }
+
+  public function setCollisionInfo(ballVel:B2Vec2) {
+    _ballVel = ballVel.Copy();
   }
 
   private function turnNormal() {
@@ -89,7 +97,7 @@ class PegActor extends Actor
     }
     _body.SetMassFromShapes();
     _body.WakeUp();
-    //_body.SetLinearVelocity(new B2Vec2(0,-.5));
+    _body.SetLinearVelocity(_ballVel);
   }
 
 
