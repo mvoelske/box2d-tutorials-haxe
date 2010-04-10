@@ -35,6 +35,7 @@ class Puggle extends Sprite {
   var _director:Director;
   var _camera:Camera;
   var _timeMaster:TimeMaster;
+  var _aimingLine:AimingLine;
 
 
   var _currentBall:BallActor;
@@ -58,6 +59,11 @@ class Puggle extends Sprite {
     _currentBall = null;
 
     _director= new Director(_camera, _timeMaster);
+
+    _aimingLine = new AimingLine(9.8);
+    _camera.addChild(_aimingLine);
+    _aimingLine.showLine(new Point(250,30), new Point(-3, 2),
+        LAUNCH_VELOCITY);
 
     setupPhysicsWorld();
     createLevel();
