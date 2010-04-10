@@ -7,10 +7,15 @@
       <bitmap id="BMP_Ball" import="img/ball.png"  />
       <bitmap id="BMP_BonusChuteGraphic" import="img/bonus_chute.png" />
 
+      <bitmap id="BMP_Shooter" import="img/shooter.png" />
+
+
+
       <clip id="BMP_Peg_Blue" import="img/peg_blue.png"  />
       <clip id="BMP_Peg_Red" import="img/peg_red.png"  />
       <clip id="BMP_Peg_Blue_Lit" import="img/peg_blue_lit.png"  />
       <clip id="BMP_Peg_Red_Lit" import="img/peg_red_lit.png"  />
+
 
       <clip id="PegMovie">
         <frame>

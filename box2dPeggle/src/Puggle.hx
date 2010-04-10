@@ -37,10 +37,12 @@ class Puggle extends Sprite {
   var _timeMaster:TimeMaster;
   var _aimingLine:AimingLine;
 
+  var _shooter:Shooter;
+
 
   var _currentBall:BallActor;
 
-  inline private static var LAUNCH_POINT:Point = new Point(323, 10);
+  inline private static var SHOOTER_POINT:Point = new Point(323, 10);
   inline private static var LAUNCH_VELOCITY:Float = 470.0;
   inline private static var GOAL_PEG_NUM:Int = 22;
   inline private static var GRAVITY:Float = 7.8;
@@ -62,6 +64,10 @@ class Puggle extends Sprite {
 
     _director= new Director(_camera, _timeMaster);
 
+    _shooter = new Shooter();
+    _camera.addChild(_shooter);
+    _shooter.x = SHOOTER_POINT.x;
+    _shooter.y = SHOOTER_POINT.y;
     _aimingLine = new AimingLine(GRAVITY);
     _camera.addChild(_aimingLine);
 
@@ -190,8 +196,9 @@ class Puggle extends Sprite {
 
   private function showAimLine(e:MouseEvent) {
     if(_currentBall == null) {
-      var direction:Point = new Point(mouseX, mouseY).subtract(LAUNCH_POINT);
-      _aimingLine.showLine(LAUNCH_POINT, direction, LAUNCH_VELOCITY);
+      var launchPoint = _shooter.getLaunchPosition();
+      var direction:Point = new Point(mouseX, mouseY).subtract(launchPoint);
+      _aimingLine.showLine(launchPoint, direction, LAUNCH_VELOCITY);
     }
   }
 
@@ -217,10 +224,13 @@ class Puggle extends Sprite {
 
   private function launchBall(e:MouseEvent) {
     if(_currentBall == null) {
-      var direction:Point = new Point(mouseX, mouseY).subtract(LAUNCH_POINT);
+      var launchPoint = _shooter.getLaunchPosition();
+
+      var direction:Point = new Point(mouseX, mouseY).subtract(launchPoint);
+
       direction.normalize(LAUNCH_VELOCITY);
 
-      var newBall = new BallActor(_camera, LAUNCH_POINT, direction);
+      var newBall = new BallActor(_camera, launchPoint, direction);
       newBall.addEventListener(BallEvent.BALL_OFF_SCREEN, handleBallOffScreen);
       newBall.addEventListener(BallEvent.BALL_HIT_BONUS, handleBallInBonusChute);
       _allActors.push(newBall);
