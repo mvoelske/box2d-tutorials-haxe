@@ -87,6 +87,7 @@ class ScoreBoard extends Sprite
   public function update(score:Int, multiplier:Int, lives:Int, balls:Int,
       slomoTime:Float) {
     _score.text = Std.string(score) + " X" + Std.string(multiplier);
+    _score.width = _score.textWidth + 10;
     _lives.text = Std.string(lives);
     _balls.text = Std.string(balls);
 

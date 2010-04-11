@@ -15,7 +15,7 @@ class TimeMaster
   }
 
   public function slowDown() {
-    slowDownBy(5);
+    slowDownBy(9);
   }
 
   public function slowDownBy(factor:Int) {

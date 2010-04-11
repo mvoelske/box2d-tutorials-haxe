@@ -250,7 +250,7 @@ class Puggle extends Sprite {
     //} else {
     //}
     if(_currentBall!=null &&
-        _currentBall.getSpriteLoc().y > Lib.current.stage.stageHeight - 40) {
+        _currentBall.getSpriteLoc().y > Lib.current.stage.stageHeight - 20) {
 
       var p1 = _currentBall.getSpriteLoc();
       var p2 = _bonusChute.getSpriteLoc();

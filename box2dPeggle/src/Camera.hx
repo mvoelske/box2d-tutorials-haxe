@@ -10,7 +10,7 @@ import caurina.transitions.Tweener;
 class Camera extends Sprite 
 {
 
-  inline private static var ZOOM_IN_AMT:Float = 3.3;
+  inline private static var ZOOM_IN_AMT:Float = 5.3;
 
 
   public function new() {
@@ -24,7 +24,7 @@ class Camera extends Sprite
 
     if(Tweener.getTweenCount(this) > 0) Tweener.removeTweens(this);
     Tweener.addTween(this, {x:newx, y:newy, scaleX:ZOOM_IN_AMT,
-        scaleY:ZOOM_IN_AMT, transition:"linear", time:1.0});
+        scaleY:ZOOM_IN_AMT, transition:"linear", time:0.3});
 
   }
 
