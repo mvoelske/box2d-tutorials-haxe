@@ -23,6 +23,7 @@ class PegActor extends HitBonusActor
 
   inline public static var NORMAL:Int = 1;
   inline public static var GOAL:Int = 2;
+  inline public static var BONUS:Int = 3;
 
   inline private static var PEG_DIAMETER:Int = 19;
 
@@ -76,8 +77,10 @@ class PegActor extends HitBonusActor
     }
   }
 
-  override function hitBonusTarget() {
-    dispatchEvent(new PegEvent(PegEvent.PEG_HIT_BONUS));
+  override function hitBonusTarget(center:Bool) {
+    if(center) {
+      dispatchEvent(new PegEvent(PegEvent.PEG_HIT_BONUS));
+    }
   }
 
   override function childSpecificUpdating() {
@@ -138,19 +141,16 @@ class PegActor extends HitBonusActor
   }
 
   private function setMyMovieFrame() {
-    if(_pegType == NORMAL) {
-      if(_beenHit) {
-        cast(_costume, MovieClip).gotoAndStop(2);
-      } else {
-        cast(_costume, MovieClip).gotoAndStop(1);
-      }
-    } else {
-      if(_beenHit) {
-        cast(_costume, MovieClip).gotoAndStop(4);
-      } else {
-        cast(_costume, MovieClip).gotoAndStop(3);
-      }
+    var  toFrame:Int = 1;
+    switch(_pegType) {
+      case NORMAL: toFrame=1;
+      case GOAL: toFrame=3;
+      case BONUS: toFrame=5;
     }
+    if(_beenHit) {
+      toFrame+=1;
+    }
+    cast(_costume, MovieClip).gotoAndStop(toFrame);
   }
 
 }

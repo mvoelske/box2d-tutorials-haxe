@@ -26,11 +26,24 @@ import BonusChuteActor;
 
 class Puggle extends Sprite {
 
+  inline private static var SHOOTER_POINT:Point = new Point(323, 10);
+  inline private static var LAUNCH_VELOCITY:Float = 470.0;
+  inline private static var GOAL_PEG_NUM:Int = 22;
+  inline private static var BONUS_PEG_NUM:Int = 3;
+
+  inline private static var GRAVITY:Float = 7.8;
+
+  inline private static var TIME_BETWEEN_INCREMENTS:Float = 100;
+
   var _allActors:Array<Actor>;
   var _actorsToRemove:Array<Actor>;
   var _pegsLitUp:Array<PegActor>;
   var _goalPegs:Array<PegActor>;
 
+  var _caughtPegs:Array<PegActor>;
+  var _allPegs:Array<PegActor>;
+
+  var _caughtBall:Bool;
 
   var _director:Director;
   var _camera:Camera;
@@ -39,17 +52,23 @@ class Puggle extends Sprite {
 
   var _shooter:Shooter;
 
-
   var _currentBall:BallActor;
 
-  inline private static var SHOOTER_POINT:Point = new Point(323, 10);
-  inline private static var LAUNCH_VELOCITY:Float = 470.0;
-  inline private static var GOAL_PEG_NUM:Int = 22;
-  inline private static var GRAVITY:Float = 7.8;
+  var _ballsLeft:Int;
+  var _livesLeft:Int;
+  var _score:Int;
+  var _scoreMultiplier:Int;
+  var _nextIncrement:Float;
 
 
   public function new() {/*{{{*/
     super();
+
+    _ballsLeft = 1;
+    _livesLeft = 3;
+    _score = 0;
+    _scoreMultiplier = 1;
+    _nextIncrement = 0;
 
     _camera = new Camera();
     addChild(_camera);
@@ -58,6 +77,9 @@ class Puggle extends Sprite {
     _actorsToRemove = [];
     _pegsLitUp = [];
     _goalPegs = [];
+    _caughtPegs = [];
+    _allPegs = [];
+    _caughtBall = false;
 
     _timeMaster = new TimeMaster();
     _currentBall = null;
@@ -82,12 +104,13 @@ class Puggle extends Sprite {
   }/*}}}*/
 
   private function createLevel() {/*{{{*/
+    var tmpPegs:Array<PegActor> = [];
+    var sh = Lib.current.stage.stageHeight;
+    var sw = Lib.current.stage.stageWidth;
     var horizSpacing = 46;
     var vertSpacing = 46;
     var pegBounds:Rectangle = new Rectangle(114, 226, 480, 320);
     var flipRow:Bool = false;
-    var allPegs:Array<PegActor> = [];
-
 
     // Create all of our pegs
     for (pegY in new StepIter(pegBounds.top, pegBounds.bottom, vertSpacing)) {
@@ -101,23 +124,41 @@ class Puggle extends Sprite {
           newPeg.addEventListener(PegEvent.PEG_OFF_SCREEN, handlePegOffScreen);
           newPeg.addEventListener(PegEvent.PEG_HIT_BONUS, handlePegInBonusChute);
           _allActors.push(newPeg);
-          allPegs.push(newPeg);
+          _allPegs.push(newPeg);
+          tmpPegs.push(newPeg);
       }
     }
 
     // turn some pegs into goal pegs
-    if(allPegs.length < GOAL_PEG_NUM) {
+    if(_allPegs.length < GOAL_PEG_NUM) {
       throw "Dude. I need more pegs!";
     } else {
       for(i in 0...GOAL_PEG_NUM) {
-        var randomPegNum = Math.floor(Math.random() * allPegs.length);
-        allPegs[randomPegNum].setType(PegActor.GOAL);
+        var randomPegNum = Math.floor(Math.random() * tmpPegs.length);
+        tmpPegs[randomPegNum].setType(PegActor.GOAL);
 
         // keep track of which these are
-        _goalPegs.push(allPegs[randomPegNum]);
-        allPegs.splice(randomPegNum, 1);
+        _goalPegs.push(tmpPegs[randomPegNum]);
+        tmpPegs.splice(randomPegNum, 1);
       }
     }
+
+    
+    var bonusRight:Rectangle = new Rectangle(10, sh-350, 50, 300);
+    var bonusLeft:Rectangle = new Rectangle(sw-60, sh-350, 50, 300);
+    for(i in 0...BONUS_PEG_NUM) {
+      var pegY = randomInt(bonusRight.top, bonusRight.bottom);
+      var pegX = Math.random() > 0.5 ? randomInt(bonusRight.left,
+          bonusRight.right) : randomInt(bonusLeft.left, bonusLeft.right);
+      var newPeg:PegActor = new PegActor(_camera, new Point(pegX, pegY),
+          PegActor.BONUS);
+      _allActors.push(newPeg);
+      newPeg.addEventListener(PegEvent.PEG_LIT_UP, handlePegLitUp);
+      newPeg.addEventListener(PegEvent.DONE_FADING_OUT, destroyPegNow);
+      newPeg.addEventListener(PegEvent.PEG_OFF_SCREEN, handlePegOffScreen);
+      newPeg.addEventListener(PegEvent.PEG_HIT_BONUS, handlePegInBonusChute);
+    }
+
 
     // add the side walls
     var wallShapes:Array<Array<Point>> = [[new Point(0,0), new Point(10,0),
@@ -210,11 +251,11 @@ class Puggle extends Sprite {
     }
   }/*}}}*/
 
-  private function hasValidAimPos():Bool {
+  private function hasValidAimPos():Bool {/*{{{*/
     var bounds:Rectangle = _shooter.getBounds(this);
     return !(mouseX > bounds.left && mouseX < bounds.right && mouseY <
       bounds.bottom);
-  }
+  }/*}}}*/
 
   // actually remove marked actors
   private function reallyRemoveActors() {/*{{{*/
@@ -238,6 +279,8 @@ class Puggle extends Sprite {
 
   private function launchBall(e:MouseEvent) {/*{{{*/
     if(_currentBall == null && hasValidAimPos()) {
+      _caughtBall = false;
+      _caughtPegs = [];
       var launchPoint = _shooter.getLaunchPosition();
 
       var direction:Point = new Point(mouseX, mouseY).subtract(launchPoint);
@@ -247,29 +290,65 @@ class Puggle extends Sprite {
       var newBall = new BallActor(_camera, launchPoint, direction);
       newBall.addEventListener(BallEvent.BALL_OFF_SCREEN, handleBallOffScreen);
       newBall.addEventListener(BallEvent.BALL_HIT_BONUS, handleBallInBonusChute);
+      newBall.addEventListener(BallEvent.BALL_HIT_BONUS_SIDE,
+          incrementMultiplier);
       _allActors.push(newBall);
       _currentBall = newBall;
       _aimingLine.hide();
+      _scoreMultiplier = 1;
+      _ballsLeft -= 1;
     }
   }/*}}}*/
 
   private function handleBallInBonusChute(e:BallEvent) {/*{{{*/
-    trace("!B O N U S!");
+    //trace("!B O N U S!");
+    _caughtBall = true;
+    getScore(scoreCaughtBall);
+    _ballsLeft += 1;
     handleBallOffScreen(e);
   }/*}}}*/
 
   private function handlePegInBonusChute(e:PegEvent) {/*{{{*/
-    trace("peg bonus: " + cast(e.currentTarget, PegActor)._pegType);
+    //trace("peg bonus: " + cast(e.currentTarget, PegActor)._pegType);
+    var peg = cast(e.currentTarget, PegActor);
+    switch(peg._pegType) {
+      case PegActor.NORMAL: getScore(scoreCaughtBlue);
+      case PegActor.GOAL:   getScore(scoreCaughtRed);
+                            loseLife();
+      case PegActor.BONUS:  getScore(scoreCaughtBonus);
+                            //TODO: get slomo
+    }
+    _caughtPegs.push(peg);
     handlePegOffScreen(e);
   }/*}}}*/
 
   private function handlePegOffScreen(e:PegEvent) {/*{{{*/
     var pegToRemove = cast(e.currentTarget, PegActor);
+    if(!Lambda.has(_caughtPegs, pegToRemove)) {
+      // peg really fell off screen
+      switch(pegToRemove._pegType) {
+        case PegActor.NORMAL: getScore(scoreLostBlue);
+        case PegActor.GOAL:    getScore(scoreLostRed);
+        case PegActor.BONUS:  getScore(scoreLostBonus);
+      }
+    }
+    _allPegs.remove(pegToRemove);
+    if(_allPegs.length == 0) {
+      getScore(scoreClearAll);
+    }
     pegToRemove.removeEventListener(PegEvent.PEG_OFF_SCREEN,
         handlePegOffScreen);
     pegToRemove.removeEventListener(PegEvent.PEG_HIT_BONUS,
         handlePegInBonusChute);
     safeRemoveActor(pegToRemove);
+  }/*}}}*/
+
+  private function incrementMultiplier(e:BallEvent) {/*{{{*/
+    if(Date.now().getTime() >= _nextIncrement) {
+      _scoreMultiplier++;
+      trace("mult:"+_scoreMultiplier);
+      _nextIncrement = Date.now().getTime() + TIME_BETWEEN_INCREMENTS;
+    }
   }/*}}}*/
 
   private function handleBallOffScreen(e:BallEvent) {/*{{{*/
@@ -279,9 +358,16 @@ class Puggle extends Sprite {
         handleBallOffScreen);
     ballToRemove.removeEventListener(BallEvent.BALL_HIT_BONUS,
         handleBallInBonusChute);
+    ballToRemove.removeEventListener(BallEvent.BALL_HIT_BONUS_SIDE,
+        incrementMultiplier);
     safeRemoveActor(ballToRemove);
 
+    if(!_caughtBall) {
+      getScore(scoreLostBall);
+    }
+
     _currentBall = null;
+    _scoreMultiplier = 1;
 
     // Remove the pegs that have been lit up at this point
     for(i in 0..._pegsLitUp.length) {
@@ -290,13 +376,19 @@ class Puggle extends Sprite {
     }
     _pegsLitUp = [];
 
+    if(_ballsLeft < 1) {
+      // TODO: game over
+    }
+
     showAimLine(null);
+
   }/*}}}*/
 
   private function handlePegLitUp(e:PegEvent) {/*{{{*/
     // record the fact that the peg has been lit, remove later
     var pegActor:PegActor = cast(e.currentTarget, PegActor);
     pegActor.removeEventListener(PegEvent.PEG_LIT_UP, handlePegLitUp);
+    getScore(scoreHitPeg);
     if(!Lambda.has(_pegsLitUp, pegActor)) {
       _pegsLitUp.push(pegActor);
       if(Lambda.has(_goalPegs, pegActor)) {
@@ -320,6 +412,11 @@ class Puggle extends Sprite {
     PhysiVals._world.SetContactListener(new PuggleContactListener());
   }/*}}}*/
 
+  private function loseLife() {/*{{{*/
+    // TODO: check if zero
+    _livesLeft -= 1;
+  }/*}}}*/
+
   public static function main() {
     new Puggle();
   }
@@ -327,6 +424,35 @@ class Puggle extends Sprite {
   private static function getDistSquared(p1:Point, p2:Point) : Int {
     var dx = (p2.x-p1.x); var dy = (p2.y - p1.y);
     return Math.round(dx*dx + dy*dy);
+  }
+
+  private static function randomInt(lowVal:Float, hiVal:Float) : Int {
+    if(lowVal <= hiVal) {
+      return (Math.floor(lowVal) + Math.floor(Math.random() * (hiVal - lowVal
+              + 1)));
+    }
+    return 4;
+  }
+
+  private function getScore(e:ScoreEvent) {
+    var inc = scoreFor(e);
+    _score += (inc > 0 ? inc * _scoreMultiplier : inc);
+    trace(_score);
+  }
+
+  private static function scoreFor(e:ScoreEvent) : Int {
+    switch(e) {
+      case scoreHitPeg:      return 3;
+      case scoreCaughtBall:  return  10;
+      case scoreLostBall:    return -10;
+      case scoreCaughtRed:   return -50;
+      case scoreCaughtBlue:  return 50;
+      case scoreCaughtBonus: return 25;
+      case scoreLostRed:     return 1;
+      case scoreLostBlue:    return -5;
+      case scoreLostBonus:   return -50;
+      case scoreClearAll:    return 1000;
+    }
   }
 
 }
@@ -338,4 +464,17 @@ class StepIter {
     this.min=min;this.max=max;this.step=step; }
   public function hasNext() { return min + step <= max;}
   public function next() { var m = min; min += step; return m;} 
+}
+
+enum ScoreEvent {
+  scoreHitPeg;
+  scoreCaughtBall;
+  scoreLostBall;
+  scoreCaughtRed;
+  scoreCaughtBlue;
+  scoreCaughtBonus;
+  scoreLostRed;
+  scoreLostBlue;
+  scoreLostBonus;
+  scoreClearAll;
 }

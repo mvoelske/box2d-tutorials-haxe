@@ -13,6 +13,7 @@ class BonusChuteActor extends Actor
 {
 
   inline public static var BONUS_TARGET:String = "BonusTarget";
+  inline public static var SIDE_TARGET:String = "SideTarget";
   inline static var TRAVEL_SPEED = 2;
   private var _bounds:Array<Int>;
   private var _yPos:Int;
@@ -42,6 +43,7 @@ class BonusChuteActor extends Actor
     leftRampShapeDef.friction = 0.1;
     leftRampShapeDef.restitution = 0.6;
     leftRampShapeDef.density = 1;
+    leftRampShapeDef.userData = BonusChuteActor.SIDE_TARGET;
 
     var rightRampShapeDef:B2PolygonDef = new B2PolygonDef();
     rightRampShapeDef.vertexCount = 3;
@@ -55,6 +57,7 @@ class BonusChuteActor extends Actor
     rightRampShapeDef.friction = 0.1;
     rightRampShapeDef.restitution = 0.6;
     rightRampShapeDef.density = 1;
+    rightRampShapeDef.userData = BonusChuteActor.SIDE_TARGET;
 
 
     var centerHoleShapeDef = new B2PolygonDef();

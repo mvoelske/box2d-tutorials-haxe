@@ -7,6 +7,7 @@ class BallEvent extends Event
 {
   inline static public var BALL_OFF_SCREEN:String = "BallOffScreen";
   inline static public var BALL_HIT_BONUS:String = "BallHitBonus";
+  inline static public var BALL_HIT_BONUS_SIDE:String = "BallHitBonusSide";
 
   public function new(type:String, bubbles:Bool=false, cancelable:Bool=false) {
     super(type, bubbles, cancelable);

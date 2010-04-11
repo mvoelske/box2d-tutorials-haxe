@@ -10,17 +10,17 @@
 import flash.display.Bitmap;
 import flash.display.MovieClip;
 import flash.display.Sprite;
-    <xsl:for-each select="//bitmap">
+<xsl:for-each select="//library/bitmap">
 class <xsl:value-of select="@id"/> extends Bitmap
      { public function new() { super(); } }
     </xsl:for-each>
     
-    <xsl:for-each select="//clip">
+    <xsl:for-each select="//library/clip">
 class <xsl:value-of select="@id"/> extends MovieClip
      { public function new() { super(); } }
     </xsl:for-each>
 
-    <xsl:for-each select="//sound">
+    <xsl:for-each select="//library/sound">
 class <xsl:value-of select="@id"/> extends MovieClip
      { public function new() { super(); } }
     </xsl:for-each>

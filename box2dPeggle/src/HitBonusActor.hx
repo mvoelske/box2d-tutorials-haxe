@@ -1,7 +1,7 @@
 package;
 class HitBonusActor extends Actor
 {
-  public function hitBonusTarget() {
+  public function hitBonusTarget(center:Bool) {
     // to override
   }
 }

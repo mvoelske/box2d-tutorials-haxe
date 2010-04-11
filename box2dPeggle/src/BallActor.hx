@@ -53,8 +53,12 @@ class BallActor extends HitBonusActor
     super(ballBody,ballSprite);
   }
 
-  override function hitBonusTarget() {
-    dispatchEvent(new BallEvent(BallEvent.BALL_HIT_BONUS));
+  override function hitBonusTarget(center:Bool) {
+    if(center) {
+      dispatchEvent(new BallEvent(BallEvent.BALL_HIT_BONUS));
+    } else {
+      dispatchEvent(new BallEvent(BallEvent.BALL_HIT_BONUS_SIDE));
+    }
   }
   
   override function childSpecificUpdating() {
