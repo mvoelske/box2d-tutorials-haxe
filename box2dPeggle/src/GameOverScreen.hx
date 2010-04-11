@@ -6,9 +6,11 @@ import flash.text.TextFormat;
 
 class GameOverScreen extends Sprite
 {
+
   var _textGameOver : TextField;
   var _textScore : TextField;
   var _textScoreLabel : TextField;
+  var _textRestart : TextField;
 
   function adjust(t:TextField, y:Float) {
     t.width = t.textWidth + 5;
@@ -27,19 +29,22 @@ class GameOverScreen extends Sprite
     fmt.size = 32;
     _textScoreLabel = ScoreBoard.mkLabel(fmt, "Final Score");
     _textScore = ScoreBoard.mkLabel(fmt, Std.string(finalScore));
+    _textRestart = ScoreBoard.mkLabel(fmt, "click to play again");
 
     var g = graphics;
     g.lineStyle(3.0);
     g.beginFill(0xffffff, .8);
-    g.drawRoundRect(0,0,500,250,25);
+    g.drawRoundRect(0,0,500,350,25);
     g.endFill();
 
     adjust(_textGameOver, _textGameOver.height * 0.9);
     adjust(_textScoreLabel, ScoreBoard.below(_textGameOver) + 20);
     adjust(_textScore, ScoreBoard.below(_textScoreLabel));
+    adjust(_textRestart, ScoreBoard.below(_textScore) + 50);
     addChild(_textGameOver);
     addChild(_textScore);
     addChild(_textScoreLabel);
+    addChild(_textRestart);
   }
 
 }

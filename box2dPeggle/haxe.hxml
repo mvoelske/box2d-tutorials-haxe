@@ -4,5 +4,6 @@
 -cp gen
 -cp src
 -debug
+-main PugMain
 -lib box2d
 -lib TweenerHX

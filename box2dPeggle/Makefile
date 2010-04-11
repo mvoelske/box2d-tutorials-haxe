@@ -9,7 +9,7 @@ ASSETS  = $(wildcard res/img/* res/snd/*)
 all:	$(PROJECT).swf
 
 $(PROJECT).swf:	$(SOURCES) haxe.hxml res/library.swf gen/AssetClasses.hx
-	$(HAXE) haxe.hxml -main $(PROJECT) -swf9 $(PROJECT).swf
+	$(HAXE) haxe.hxml -swf9 $(PROJECT).swf
 
 res/library.swf:	res/library.xml $(ASSETS)
 

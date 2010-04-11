@@ -59,6 +59,8 @@ class Puggle extends Sprite {
 
   var _slomoSecs:Float;
 
+  var _gameOverScreen:GameOverScreen;
+
 
   public function new() {/*{{{*/
     super();
@@ -102,7 +104,6 @@ class Puggle extends Sprite {
     Lib.current.stage.addEventListener(MouseEvent.CLICK, launchBall);
     Lib.current.stage.addEventListener(MouseEvent.MOUSE_MOVE, showAimLine);
     
-    Lib.current.addChild(this);
   }/*}}}*/
 
   private function createLevel() {/*{{{*/
@@ -441,15 +442,23 @@ class Puggle extends Sprite {
     _ballsLeft = 0;
     _running = false;
     Lib.current.stage.removeEventListener(MouseEvent.CLICK, launchBall);
-    var gameOverScreen = new GameOverScreen(_score);
+    Lib.current.stage.removeEventListener(MouseEvent.MOUSE_MOVE, showAimLine);
+    _gameOverScreen = new GameOverScreen(_score);
     var mc = flash.Lib.current;
-    gameOverScreen.x = mc.stage.stageWidth/2 - gameOverScreen.width/2;
-    gameOverScreen.y = mc.stage.stageHeight/2 - gameOverScreen.height/2;
-    mc.addChild(gameOverScreen);
+    _gameOverScreen.x = mc.stage.stageWidth/2 - _gameOverScreen.width/2;
+    _gameOverScreen.y = mc.stage.stageHeight/2 - _gameOverScreen.height/2;
+    mc.addChild(_gameOverScreen);
+    for(a in _allActors) {
+      safeRemoveActor(a);
+    }
+
+    Lib.current.stage.addEventListener(MouseEvent.CLICK, restart);
   }
 
-  public static function main() {
-    new Puggle();
+  private function restart(e:MouseEvent) {
+    Lib.current.stage.removeEventListener(MouseEvent.CLICK, restart);
+    Lib.current.removeChild(_gameOverScreen);
+    dispatchEvent(new RestartEvent(RestartEvent.NEW_GAME));
   }
 
   private static function getDistSquared(p1:Point, p2:Point) : Int {
