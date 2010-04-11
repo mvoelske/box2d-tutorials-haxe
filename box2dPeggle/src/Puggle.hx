@@ -20,14 +20,14 @@ class Puggle extends Sprite {
   inline private static var SHOOTER_POINT:Point = new Point(323, 10);
   inline private static var LAUNCH_VELOCITY:Float = 470.0;
   inline private static var GOAL_PEG_NUM:Int = 22;
-  inline private static var BONUS_PEG_NUM:Int = 13;
+  inline private static var BONUS_PEG_NUM:Int = 3;
 
   inline private static var GRAVITY:Float = 7.8;
 
   inline private static var TIME_BETWEEN_INCREMENTS:Float = 100;
 
-  inline private static var SLOMO_TIME_BONUS = 5.5;
-  inline private static var SLOMO_FACTOR = 5;
+  inline private static var SLOMO_TIME_BONUS = 4.5;
+  inline private static var SLOMO_FACTOR = 4;
 
   var _allActors:Array<Actor>;
   var _actorsToRemove:Array<Actor>;
@@ -213,7 +213,8 @@ class Puggle extends Sprite {
   }/*}}}*/
 
   private function newFrameListener(e:Event) {/*{{{*/
-    _scoreBoard.update(_score, _livesLeft, _ballsLeft, _slomoSecs);
+    _scoreBoard.update(_score, _scoreMultiplier, _livesLeft,_ballsLeft,
+        _slomoSecs);
     if(_running) {
       PhysiVals._world.Step(_timeMaster.getTimeStep(), 10);
 
@@ -235,7 +236,6 @@ class Puggle extends Sprite {
   }/*}}}*/
 
   private function checkForZooming() {/*{{{*/
-    // TODO: change so that it zooms in on the last ball lost
     //if(_goalPegs.length == 1 && _currentBall != null) {
     //  var finalPeg = _goalPegs[0];
     //  var p1 = finalPeg.getSpriteLoc();
@@ -440,13 +440,11 @@ class Puggle extends Sprite {
     _ballsLeft = 0;
     _running = false;
     Lib.current.stage.removeEventListener(MouseEvent.CLICK, launchBall);
-    var gameOverScreen = new GameOverScreen();
+    var gameOverScreen = new GameOverScreen(_score);
     var mc = flash.Lib.current;
     gameOverScreen.x = mc.stage.stageWidth/2 - gameOverScreen.width/2;
     gameOverScreen.y = mc.stage.stageHeight/2 - gameOverScreen.height/2;
     mc.addChild(gameOverScreen);
-
-    //TODO: display score etc
   }
 
   public static function main() {
@@ -470,7 +468,7 @@ class Puggle extends Sprite {
     switch(e) {
       case scoreHitPeg:      return 3;
       case scoreCaughtBall:  return  10;
-      case scoreLostBall:    return -10;
+      case scoreLostBall:    return 0;//-10;
       case scoreCaughtRed:   return -50;
       case scoreCaughtBlue:  return 50;
       case scoreCaughtBonus: return 25;

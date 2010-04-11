@@ -15,7 +15,9 @@ class ScoreBoard extends Sprite
   var _balls:TextField;
   var _slomot:TextField;
 
-  static function mkLabel(fmt:TextFormat, text:String=null) : TextField {
+  public static function mkLabel(fmt:TextFormat, 
+                    text:String=null) : TextField
+  {
     var label = new TextField();
     label.embedFonts = true;
     label.defaultTextFormat = fmt;
@@ -28,11 +30,11 @@ class ScoreBoard extends Sprite
     return label;
   }
 
-  static function below(l:TextField) {
+  public static function below(l:TextField) {
     return l.y + l.textHeight + VSPC;
   }
 
-  static function rightOf(l:TextField) {
+  public static function rightOf(l:TextField) {
     return l.x + l.textWidth + HSPC;
   }
 
@@ -82,8 +84,9 @@ class ScoreBoard extends Sprite
     addChild(_slomot);
   }
 
-  public function update(score:Int, lives:Int, balls:Int, slomoTime:Float) {
-    _score.text = Std.string(score);
+  public function update(score:Int, multiplier:Int, lives:Int, balls:Int,
+      slomoTime:Float) {
+    _score.text = Std.string(score) + " X" + Std.string(multiplier);
     _lives.text = Std.string(lives);
     _balls.text = Std.string(balls);
 
