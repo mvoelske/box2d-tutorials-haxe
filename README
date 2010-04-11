@@ -1,0 +1,6 @@
+The code in this repo is based on the excellent box2D-actionscript tutorials
+at http://www.kerp.net/box2d/index.php
+
+The enclosed box2d-haxe port is from http://code.google.com/p/box2d-haxe/. I
+have packaged so that it can be installed locally via haxelib. 
+Run 'haxelib test box2d-haxelib.zip'
