@@ -17,14 +17,14 @@ class BonusChuteActor extends Actor
   inline static var TRAVEL_SPEED = 2;
   private var _bounds:Array<Int>;
   private var _yPos:Int;
-  private var _direction:Int;
+  private var _timeMaster:TimeMaster;
 
   public function new(parent:DisplayObjectContainer, leftBounds:Int,
-      rightBounds:Int, yPos:Int) {
+      rightBounds:Int, yPos:Int, timeMaster) {
 
     _bounds = [leftBounds, rightBounds];
     _yPos = yPos;
-    _direction = 1;
+    _timeMaster = timeMaster;
 
 
     var chuteGraphic:Sprite = new BonusChuteSprite();
@@ -103,7 +103,7 @@ class BonusChuteActor extends Actor
     directionToTravel.Multiply(1 / PhysiVals.RATIO);
 
     // multiply by frame rate to get m/s
-    directionToTravel.Multiply(PhysiVals.FRAME_RATE);
+    directionToTravel.Multiply(1.0 / _timeMaster.getTimeStep());
 
     _body.SetLinearVelocity(directionToTravel);
 

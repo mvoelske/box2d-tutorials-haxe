@@ -20,13 +20,14 @@ class Puggle extends Sprite {
   inline private static var SHOOTER_POINT:Point = new Point(323, 10);
   inline private static var LAUNCH_VELOCITY:Float = 470.0;
   inline private static var GOAL_PEG_NUM:Int = 22;
-  inline private static var BONUS_PEG_NUM:Int = 3;
+  inline private static var BONUS_PEG_NUM:Int = 13;
 
   inline private static var GRAVITY:Float = 7.8;
 
   inline private static var TIME_BETWEEN_INCREMENTS:Float = 100;
 
-  inline private static var SLOMO_TIME_BONUS = 1.5;
+  inline private static var SLOMO_TIME_BONUS = 5.5;
+  inline private static var SLOMO_FACTOR = 5;
 
   var _allActors:Array<Actor>;
   var _actorsToRemove:Array<Actor>;
@@ -38,7 +39,6 @@ class Puggle extends Sprite {
 
   var _caughtBall:Bool;
 
-  var _director:Director;
   var _camera:Camera;
   var _timeMaster:TimeMaster;
   var _aimingLine:AimingLine;
@@ -87,7 +87,6 @@ class Puggle extends Sprite {
     _timeMaster = new TimeMaster();
     _currentBall = null;
 
-    _director= new Director(_camera, _timeMaster);
 
     _shooter = new Shooter();
     _camera.addChild(_shooter);
@@ -133,7 +132,7 @@ class Puggle extends Sprite {
     }
 
     // turn some pegs into goal pegs
-    if(_allPegs.length < GOAL_PEG_NUM) {
+    if(tmpPegs.length < GOAL_PEG_NUM) {
       throw "Dude. I need more pegs!";
     } else {
       for(i in 0...GOAL_PEG_NUM) {
@@ -146,20 +145,18 @@ class Puggle extends Sprite {
       }
     }
 
-    
-    var bonusRight:Rectangle = new Rectangle(10, sh-350, 50, 300);
-    var bonusLeft:Rectangle = new Rectangle(sw-60, sh-350, 50, 300);
-    for(i in 0...BONUS_PEG_NUM) {
-      var pegY = randomInt(bonusRight.top, bonusRight.bottom);
-      var pegX = Math.random() > 0.5 ? randomInt(bonusRight.left,
-          bonusRight.right) : randomInt(bonusLeft.left, bonusLeft.right);
-      var newPeg:PegActor = new PegActor(_camera, new Point(pegX, pegY),
-          PegActor.BONUS);
-      _allActors.push(newPeg);
-      newPeg.addEventListener(PegEvent.PEG_LIT_UP, handlePegLitUp);
-      newPeg.addEventListener(PegEvent.DONE_FADING_OUT, destroyPegNow);
-      newPeg.addEventListener(PegEvent.PEG_OFF_SCREEN, handlePegOffScreen);
-      newPeg.addEventListener(PegEvent.PEG_HIT_BONUS, handlePegInBonusChute);
+    // turn some pegs into bonus pegs  
+    if(tmpPegs.length < BONUS_PEG_NUM) {
+      throw "Dude. I need more pegs!";
+    } else {
+      for(i in 0...BONUS_PEG_NUM) {
+        var randomPegNum = Math.floor(Math.random() * tmpPegs.length);
+        tmpPegs[randomPegNum].setType(PegActor.BONUS);
+
+        // keep track of which these are
+        _goalPegs.push(tmpPegs[randomPegNum]);
+        tmpPegs.splice(randomPegNum, 1);
+      }
     }
 
 
@@ -205,7 +202,7 @@ class Puggle extends Sprite {
 
 
     var bonusChute:BonusChuteActor = new BonusChuteActor(_camera, 100,
-        Lib.current.stage.stageWidth - 100, 580);
+        Lib.current.stage.stageWidth - 100, 580, _timeMaster);
     _allActors.push(bonusChute);
   }/*}}}*/
 
@@ -218,9 +215,7 @@ class Puggle extends Sprite {
   private function newFrameListener(e:Event) {/*{{{*/
     _scoreBoard.update(_score, _livesLeft, _ballsLeft, _slomoSecs);
     if(_running) {
-      PhysiVals._world.Step(
-          _timeMaster.getTimeStep(), 
-      10);
+      PhysiVals._world.Step(_timeMaster.getTimeStep(), 10);
 
       for (pa in _allActors) {
         pa.updateNow();
@@ -230,6 +225,7 @@ class Puggle extends Sprite {
         _slomoSecs -= 1.0 / PhysiVals.FRAME_RATE;
       } else {
         _slomoSecs = 0;
+        _timeMaster.backToNormal();
       }
 
       checkForZooming();
@@ -240,17 +236,20 @@ class Puggle extends Sprite {
 
   private function checkForZooming() {/*{{{*/
     // TODO: change so that it zooms in on the last ball lost
-    if(_goalPegs.length == 1 && _currentBall != null) {
-      var finalPeg = _goalPegs[0];
-      var p1 = finalPeg.getSpriteLoc();
-      var p2 = _currentBall.getSpriteLoc();
-      if(getDistSquared(p1,p2) < 75*75) {
-        _director.zoomIn(p1);
-      } else {
-        _director.backToNormal();
-      }
+    //if(_goalPegs.length == 1 && _currentBall != null) {
+    //  var finalPeg = _goalPegs[0];
+    //  var p1 = finalPeg.getSpriteLoc();
+    //  var p2 = _currentBall.getSpriteLoc();
+    //  if(getDistSquared(p1,p2) < 75*75) {
+    //  } else {
+    //  }
+    //} else {
+    //}
+    if(_currentBall!=null &&
+        _currentBall.getSpriteLoc().y > Lib.current.stage.stageHeight - 20) {
+      _camera.zoomTo(_currentBall.getSpriteLoc());
     } else {
-      _director.backToNormal();
+      _camera.zoomOut();
     }
   }/*}}}*/
 
@@ -360,8 +359,10 @@ class Puggle extends Sprite {
       case PegActor.GOAL:   getScore(scoreCaughtRed);
                             loseLife();
       case PegActor.BONUS:  getScore(scoreCaughtBonus);
+                            if(_slomoSecs <= 0) {
+                              _timeMaster.slowDownBy(SLOMO_FACTOR);
+                            }
                             _slomoSecs += SLOMO_TIME_BONUS;
-                            //TODO: get slomo
     }
     _caughtPegs.push(peg);
     handlePegOffScreen(e);
@@ -437,9 +438,14 @@ class Puggle extends Sprite {
 
   private function gameOver() {
     _ballsLeft = 0;
-    trace("G A M E  O V E R");
     _running = false;
     Lib.current.stage.removeEventListener(MouseEvent.CLICK, launchBall);
+    var gameOverScreen = new GameOverScreen();
+    var mc = flash.Lib.current;
+    gameOverScreen.x = mc.stage.stageWidth/2 - gameOverScreen.width/2;
+    gameOverScreen.y = mc.stage.stageHeight/2 - gameOverScreen.height/2;
+    mc.addChild(gameOverScreen);
+
     //TODO: display score etc
   }
 
