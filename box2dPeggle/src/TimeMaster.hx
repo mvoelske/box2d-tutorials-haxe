@@ -15,8 +15,12 @@ class TimeMaster
   }
 
   public function slowDown() {
-    Tweener.addTween(this, {_frameRate:PhysiVals.FRAME_RATE*5,
-        time:0.5,transition:"linear"});
+    slowDownBy(5);
+  }
+
+  public function slowDownBy(factor:Int) {
+    Tweener.addTween(this, {_frameRate:_frameRate*factor,
+        time:0.5,transition:"linear", onComplete:backToNormal });
   }
 
   public function backToNormal() {

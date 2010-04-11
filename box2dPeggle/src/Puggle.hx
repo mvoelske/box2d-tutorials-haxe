@@ -1,7 +1,5 @@
 package;
 
-import PhysiVals;
-
 import flash.Lib;
 import flash.display.Sprite;
 import flash.events.Event;
@@ -16,13 +14,6 @@ import box2D.dynamics.B2World;
 import box2D.dynamics.B2Body;
 import box2D.dynamics.B2BodyDef;
 
-import Actor;
-import BallActor;
-import PegActor;
-import ArbiStaticActor;
-import PuggleContactListener;
-import PegEvent;
-import BonusChuteActor;
 
 class Puggle extends Sprite {
 
@@ -34,6 +25,8 @@ class Puggle extends Sprite {
   inline private static var GRAVITY:Float = 7.8;
 
   inline private static var TIME_BETWEEN_INCREMENTS:Float = 100;
+
+  inline private static var SLOMO_TIME_BONUS = 1.5;
 
   var _allActors:Array<Actor>;
   var _actorsToRemove:Array<Actor>;
@@ -52,6 +45,8 @@ class Puggle extends Sprite {
 
   var _shooter:Shooter;
 
+  var _scoreBoard:ScoreBoard;
+
   var _currentBall:BallActor;
 
   var _ballsLeft:Int;
@@ -59,6 +54,10 @@ class Puggle extends Sprite {
   var _score:Int;
   var _scoreMultiplier:Int;
   var _nextIncrement:Float;
+
+  var _running:Bool;
+
+  var _slomoSecs:Float;
 
 
   public function new() {/*{{{*/
@@ -72,6 +71,8 @@ class Puggle extends Sprite {
 
     _camera = new Camera();
     addChild(_camera);
+    _scoreBoard = new ScoreBoard();
+    addChild(_scoreBoard);
 
     _allActors = [];
     _actorsToRemove = [];
@@ -80,6 +81,8 @@ class Puggle extends Sprite {
     _caughtPegs = [];
     _allPegs = [];
     _caughtBall = false;
+    _running = true;
+    _slomoSecs = 0.0;
 
     _timeMaster = new TimeMaster();
     _currentBall = null;
@@ -213,18 +216,30 @@ class Puggle extends Sprite {
   }/*}}}*/
 
   private function newFrameListener(e:Event) {/*{{{*/
-    PhysiVals._world.Step(_timeMaster.getTimeStep(), 10);
+    _scoreBoard.update(_score, _livesLeft, _ballsLeft, _slomoSecs);
+    if(_running) {
+      PhysiVals._world.Step(
+          _timeMaster.getTimeStep(), 
+      10);
 
-    for (pa in _allActors) {
-      pa.updateNow();
+      for (pa in _allActors) {
+        pa.updateNow();
+      }
+
+      if(_slomoSecs > 0) {
+        _slomoSecs -= 1.0 / PhysiVals.FRAME_RATE;
+      } else {
+        _slomoSecs = 0;
+      }
+
+      checkForZooming();
+
+      reallyRemoveActors();
     }
-
-    checkForZooming();
-
-    reallyRemoveActors();
   }/*}}}*/
 
   private function checkForZooming() {/*{{{*/
+    // TODO: change so that it zooms in on the last ball lost
     if(_goalPegs.length == 1 && _currentBall != null) {
       var finalPeg = _goalPegs[0];
       var p1 = finalPeg.getSpriteLoc();
@@ -260,7 +275,6 @@ class Puggle extends Sprite {
   // actually remove marked actors
   private function reallyRemoveActors() {/*{{{*/
     if(_actorsToRemove.length > 0)
-    //trace("removing " + _actorsToRemove.length + " actors.");
     for(removeMe in _actorsToRemove) {
       removeMe.destroy();
       _allActors.remove(removeMe);
@@ -278,7 +292,7 @@ class Puggle extends Sprite {
   }/*}}}*/
 
   private function launchBall(e:MouseEvent) {/*{{{*/
-    if(_currentBall == null && hasValidAimPos()) {
+    if(_currentBall == null && hasValidAimPos() && _ballsLeft > 0) {
       _caughtBall = false;
       _caughtPegs = [];
       var launchPoint = _shooter.getLaunchPosition();
@@ -301,21 +315,52 @@ class Puggle extends Sprite {
   }/*}}}*/
 
   private function handleBallInBonusChute(e:BallEvent) {/*{{{*/
-    //trace("!B O N U S!");
     _caughtBall = true;
     getScore(scoreCaughtBall);
     _ballsLeft += 1;
     handleBallOffScreen(e);
   }/*}}}*/
 
+  private function handleBallOffScreen(e:BallEvent) {/*{{{*/
+    var ballToRemove = cast(e.currentTarget, BallActor);
+    ballToRemove.removeEventListener(BallEvent.BALL_OFF_SCREEN,
+        handleBallOffScreen);
+    ballToRemove.removeEventListener(BallEvent.BALL_HIT_BONUS,
+        handleBallInBonusChute);
+    ballToRemove.removeEventListener(BallEvent.BALL_HIT_BONUS_SIDE,
+        incrementMultiplier);
+    safeRemoveActor(ballToRemove);
+
+    if(!_caughtBall) {
+      getScore(scoreLostBall);
+    }
+
+    _currentBall = null;
+    _scoreMultiplier = 1;
+
+    // Remove the pegs that have been lit up at this point
+    for(i in 0..._pegsLitUp.length) {
+      var pegToRemove = _pegsLitUp[i];
+      //pegToRemove.fadeOut(i);
+    }
+    _pegsLitUp = [];
+
+    if(_ballsLeft < 1) {
+      gameOver();
+    }
+
+    showAimLine(null);
+
+  }/*}}}*/
+
   private function handlePegInBonusChute(e:PegEvent) {/*{{{*/
-    //trace("peg bonus: " + cast(e.currentTarget, PegActor)._pegType);
     var peg = cast(e.currentTarget, PegActor);
     switch(peg._pegType) {
       case PegActor.NORMAL: getScore(scoreCaughtBlue);
       case PegActor.GOAL:   getScore(scoreCaughtRed);
                             loseLife();
       case PegActor.BONUS:  getScore(scoreCaughtBonus);
+                            _slomoSecs += SLOMO_TIME_BONUS;
                             //TODO: get slomo
     }
     _caughtPegs.push(peg);
@@ -346,42 +391,8 @@ class Puggle extends Sprite {
   private function incrementMultiplier(e:BallEvent) {/*{{{*/
     if(Date.now().getTime() >= _nextIncrement) {
       _scoreMultiplier++;
-      trace("mult:"+_scoreMultiplier);
       _nextIncrement = Date.now().getTime() + TIME_BETWEEN_INCREMENTS;
     }
-  }/*}}}*/
-
-  private function handleBallOffScreen(e:BallEvent) {/*{{{*/
-    //trace("Ball is off screen");
-    var ballToRemove = cast(e.currentTarget, BallActor);
-    ballToRemove.removeEventListener(BallEvent.BALL_OFF_SCREEN,
-        handleBallOffScreen);
-    ballToRemove.removeEventListener(BallEvent.BALL_HIT_BONUS,
-        handleBallInBonusChute);
-    ballToRemove.removeEventListener(BallEvent.BALL_HIT_BONUS_SIDE,
-        incrementMultiplier);
-    safeRemoveActor(ballToRemove);
-
-    if(!_caughtBall) {
-      getScore(scoreLostBall);
-    }
-
-    _currentBall = null;
-    _scoreMultiplier = 1;
-
-    // Remove the pegs that have been lit up at this point
-    for(i in 0..._pegsLitUp.length) {
-      var pegToRemove = _pegsLitUp[i];
-      //pegToRemove.fadeOut(i);
-    }
-    _pegsLitUp = [];
-
-    if(_ballsLeft < 1) {
-      // TODO: game over
-    }
-
-    showAimLine(null);
-
   }/*}}}*/
 
   private function handlePegLitUp(e:PegEvent) {/*{{{*/
@@ -413,9 +424,24 @@ class Puggle extends Sprite {
   }/*}}}*/
 
   private function loseLife() {/*{{{*/
-    // TODO: check if zero
     _livesLeft -= 1;
+    if(_livesLeft < 1) {
+      gameOver();
+    }
   }/*}}}*/
+
+  private function getScore(e:ScoreType) {/*{{{*/
+    var inc = scoreFor(e);
+    _score += (inc > 0 ? inc * _scoreMultiplier : inc);
+  }/*}}}*/
+
+  private function gameOver() {
+    _ballsLeft = 0;
+    trace("G A M E  O V E R");
+    _running = false;
+    Lib.current.stage.removeEventListener(MouseEvent.CLICK, launchBall);
+    //TODO: display score etc
+  }
 
   public static function main() {
     new Puggle();
@@ -434,13 +460,7 @@ class Puggle extends Sprite {
     return 4;
   }
 
-  private function getScore(e:ScoreEvent) {
-    var inc = scoreFor(e);
-    _score += (inc > 0 ? inc * _scoreMultiplier : inc);
-    trace(_score);
-  }
-
-  private static function scoreFor(e:ScoreEvent) : Int {
+  private static function scoreFor(e:ScoreType) : Int {
     switch(e) {
       case scoreHitPeg:      return 3;
       case scoreCaughtBall:  return  10;
@@ -466,7 +486,7 @@ class StepIter {
   public function next() { var m = min; min += step; return m;} 
 }
 
-enum ScoreEvent {
+enum ScoreType {
   scoreHitPeg;
   scoreCaughtBall;
   scoreLostBall;

@@ -46,8 +46,8 @@
         </frame>
       </clip>
 
-      <!--<font id="vera" name="vera" import="font/Vera.ttf" />
-        <font id="blox2" name="blox2" import="font/Blox2.ttf" /> -->
+      <font id="vera" name="vera" import="font/Vera.ttf" />
+      <font id="blox2" name="blox2" import="font/Blox2.ttf" />
     </library>
   </frame>
 </movie>
