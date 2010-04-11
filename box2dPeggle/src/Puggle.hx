@@ -381,6 +381,7 @@ class Puggle extends Sprite {
     _allPegs.remove(pegToRemove);
     if(_allPegs.length == 0) {
       getScore(scoreClearAll);
+      gameOver();
     }
     pegToRemove.removeEventListener(PegEvent.PEG_OFF_SCREEN,
         handlePegOffScreen);
