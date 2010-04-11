@@ -4,3 +4,5 @@ at http://www.kerp.net/box2d/index.php
 The enclosed box2d-haxe port is from http://code.google.com/p/box2d-haxe/. I
 have packaged so that it can be installed locally via haxelib. 
 Run 'haxelib test box2d-haxelib.zip'
+You will also need the 'TweenerHX' library, which is available from the
+central haxelib repository.
