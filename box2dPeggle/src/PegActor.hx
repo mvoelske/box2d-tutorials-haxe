@@ -125,10 +125,10 @@ class PegActor extends HitBonusActor
 
 
   public function fadeOut(pegNumber:Int) {
-    Tweener.addTween(_costume,
-        {time:0.3, alpha:0, delay:0.08 * pegNumber,
-         onComplete:sendFadeOutDone}
-    );
+    //Tweener.addTween(_costume,
+    //    {time:0.3, alpha:0, delay:0.08 * pegNumber,
+    //     onComplete:sendFadeOutDone}
+    //);
   }
 
   private function sendFadeOutDone() {

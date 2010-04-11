@@ -19,16 +19,15 @@ class TimeMaster
   }
 
   public function slowDownBy(factor:Int) {
-    // TODO: figure out why tweening doesn't work anymore
-    //Tweener.addTween(this, {_frameRate:PhysiVals.FRAME_RATE*factor,
-    //    time:0.5,transition:"linear"});
-    _frameRate = PhysiVals.FRAME_RATE * factor;
+    if(Tweener.getTweenCount(this) > 0) Tweener.removeTweens(this);
+    Tweener.addTween(this, {_frameRate:PhysiVals.FRAME_RATE*factor,
+        time:0.5,transition:"linear"});
   }
 
   public function backToNormal() {
-    //Tweener.addTween(this, {_frameRate:PhysiVals.FRAME_RATE,
-    //    time:0.5});
-    _frameRate = PhysiVals.FRAME_RATE;
+    if(Tweener.getTweenCount(this) > 0) Tweener.removeTweens(this);
+    Tweener.addTween(this, {_frameRate:PhysiVals.FRAME_RATE,
+        time:0.5});
   }
 
 }

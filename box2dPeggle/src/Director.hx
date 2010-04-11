@@ -22,7 +22,7 @@ class Director
       _zoomedIn = true;
       _camera.zoomTo(zoomInPoint);
       _timeMaster.slowDown();
-      _minimumTimeToZoomOut = Date.now().getTime() + 800;
+      _minimumTimeToZoomOut = Date.now().getTime() + 1500;
     }
   }
 

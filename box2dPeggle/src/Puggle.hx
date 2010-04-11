@@ -41,6 +41,7 @@ class Puggle extends Sprite {
 
   var _camera:Camera;
   var _timeMaster:TimeMaster;
+  var _director:Director;
   var _aimingLine:AimingLine;
 
   var _shooter:Shooter;
@@ -48,6 +49,7 @@ class Puggle extends Sprite {
   var _scoreBoard:ScoreBoard;
 
   var _currentBall:BallActor;
+  var _bonusChute:BonusChuteActor;
 
   var _ballsLeft:Int;
   var _livesLeft:Int;
@@ -87,6 +89,7 @@ class Puggle extends Sprite {
     _slomoSecs = 0.0;
 
     _timeMaster = new TimeMaster();
+    _director = new Director(_camera, _timeMaster);
     _currentBall = null;
 
 
@@ -202,9 +205,9 @@ class Puggle extends Sprite {
     _allActors.push(rightRamp3);
 
 
-    var bonusChute:BonusChuteActor = new BonusChuteActor(_camera, 100,
+    _bonusChute = new BonusChuteActor(_camera, 100,
         Lib.current.stage.stageWidth - 100, 580, _timeMaster);
-    _allActors.push(bonusChute);
+    _allActors.push(_bonusChute);
   }/*}}}*/
 
   private function destroyPegNow(e:PegEvent) {/*{{{*/
@@ -247,10 +250,15 @@ class Puggle extends Sprite {
     //} else {
     //}
     if(_currentBall!=null &&
-        _currentBall.getSpriteLoc().y > Lib.current.stage.stageHeight - 20) {
-      _camera.zoomTo(_currentBall.getSpriteLoc());
+        _currentBall.getSpriteLoc().y > Lib.current.stage.stageHeight - 40) {
+
+      var p1 = _currentBall.getSpriteLoc();
+      var p2 = _bonusChute.getSpriteLoc();
+      if(p1.x < p2.x - 100 || p1.x > p2.x + 100){
+        _director.zoomIn(p1);
+      }
     } else {
-      _camera.zoomOut();
+      _director.backToNormal();
     }
   }/*}}}*/
 
